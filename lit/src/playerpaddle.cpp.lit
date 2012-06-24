@@ -1,0 +1,30 @@
+== The player paddle class ==
+The player paddle represents a paddle that can be
+controlled by the player to play Pang against the 
+AI
+
+== Constructor ==
+-
+PlayerPaddle::PlayerPaddle()
+{
+}
+-
+
+== Destructor ==
+-
+PlayerPaddle::~PlayerPaddle()
+{
+}
+-
+
+== Includes ==
+-
+#include "playerpaddle.hpp"
+-
+
+== @playerpaddle.cpp ==
+Includes.
+
+Constructor.
+
+Destructor.

@@ -27,9 +27,11 @@ clean:
 	rm -Rf bin
 
 pang: includes game.o main.o
-	$(CC) out/game.o out/mainmenu.o out/splashscreen.o out/main.o $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@
+	$(CC) out/game.o out/mainmenu.o out/splashscreen.o out/main.o out/playerpaddle.o out/visiblegameobject.o $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@
 
-game.o: mainmenu.o splashscreen.o
+game.o: playerpaddle.o mainmenu.o splashscreen.o
+
+playerpaddle.o: visiblegameobject.o
 
 %: %.o
 	$(CC) out/$< $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@

@@ -1,4 +1,6 @@
 #include "game.hpp"
+#include "splashscreen.hpp"
+#include "mainmenu.hpp"
 void Game::Start(void)
 {
   if(_gameState != Uninitialized)
@@ -6,6 +8,9 @@ void Game::Start(void)
 
   _mainWindow.Create(sf::VideoMode(1024,768,32),"Pang!");
   _gameState = Game::ShowingSplash;
+
+  _player1.Load("assets/paddle.png");
+  _player1.SetPosition((1024/2)-45,700);
 
   while(!IsExiting())
   {
@@ -61,13 +66,22 @@ void Game::GameLoop()
         }
       case Game::Playing:
         {
-          _mainWindow.Clear(sf::Color(255,0,0));
+          _mainWindow.Clear(sf::Color(0,0,0));
+          _player1.Draw(_mainWindow);
           _mainWindow.Display();
 
           if(currentEvent.Type == sf::Event::Closed)
+          {
+            _gameState = Game::Exiting;
+          }
+          if(currentEvent.Type == sf::Event::KeyPressed)
+          {
+            if(sf::Key::Escape == currentEvent.Key.Code)
             {
-              _gameState = Game::Exiting;
+              ShowMenu();
             }
+          }
+
           break;
         }
     }
@@ -75,3 +89,4 @@ void Game::GameLoop()
 }
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::_mainWindow;
+PlayerPaddle Game::_player1;

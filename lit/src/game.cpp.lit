@@ -8,6 +8,7 @@ be able to use it later.
 -
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::_mainWindow;
+PlayerPaddle Game::_player1;
 -
 
 == Start the game ==
@@ -29,6 +30,8 @@ void Game::Start(void)
 
   _mainWindow.Create(sf::VideoMode(1024,768,32),"Pang!");
   _gameState = Game::ShowingSplash;
+
+  Set up player 1.
   
   while(!IsExiting())
   {
@@ -37,6 +40,18 @@ void Game::Start(void)
 
   _mainWindow.Close();
 }
+-
+
+== Set up player 1 ==
+When we start the game, we need to create player one, who is
+a paddle.
+
+Note the position is hardcoded because the resolution is
+hardcoded. That's not great, and is a potiential place to
+refactor.
+-
+_player1.Load("assets/paddle.png");
+_player1.SetPosition((1024/2)-45,700);
 -
 
 == Method to check if exiting ==
@@ -118,13 +133,10 @@ void Game::GameLoop()
         }
       case Game::Playing:
         {
-          _mainWindow.Clear(sf::Color(255,0,0));
-          _mainWindow.Display();
+          Render the game.
         
-          if(currentEvent.Type == sf::Event::Closed)
-            {
-              _gameState = Game::Exiting;
-            }
+          Handle game input events.
+
           break;
         }
     }
@@ -132,9 +144,36 @@ void Game::GameLoop()
 }
 -
 
+== Render the game ==
+Render the game!
+-
+_mainWindow.Clear(sf::Color(0,0,0));
+_player1.Draw(_mainWindow);
+_mainWindow.Display();
+-
+
+== Handle game input events ==
+Handle input events while we're playing the game.
+We handle quitting the game, and escaping to the menu.
+-
+if(currentEvent.Type == sf::Event::Closed)
+{
+  _gameState = Game::Exiting;
+}
+if(currentEvent.Type == sf::Event::KeyPressed)
+{
+  if(sf::Key::Escape == currentEvent.Key.Code)
+  {
+    ShowMenu();
+  }
+}
+-
+
 == Includes ==
 -
 #include "game.hpp"
+#include "splashscreen.hpp"
+#include "mainmenu.hpp"
 -
 
 == @game.cpp ==

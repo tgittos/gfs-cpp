@@ -1,0 +1,86 @@
+== The visible game object ==
+This class represents every object that needs to
+be drawn. Note that it's an abstract class and that
+it isn't intended to be created directly.
+Even though there are no pure virtual methods.
+
+== Constructor ==
+-
+VisibleGameObject::VisibleGameObject()
+{
+  _isLoaded = false;
+}
+-
+
+== Destructor ==
+The author of the tutorial has the destructor empty
+but it probably shouldn't be since we create an
+SFML image and sprite.
+-
+VisibleGameObject::~VisibleGameObject()
+{
+}
+-
+
+== Load ==
+Fail silently (not sure about that) and nuke the path if
+it doesn't load properly.
+Otherwise, save the path and the image data. Note that we
+call SetImage on the sprite because it's already been
+instantiated.
+-
+void VisibleGameObject::Load(std::string filename)
+{
+  if(!_image.LoadFromFile(filename))
+  {
+    _filename = "";
+    _isLoaded = false;
+  } else {
+    _filename = filename;
+    _sprite.SetImage(_image);
+    _isLoaded = true;
+  }
+}
+-
+
+== Draw ==
+Only draw the sprite if it's loaded
+-
+void VisibleGameObject::Draw(sf::RenderWindow& window)
+{
+  if(_isLoaded)
+  {
+    window.Draw(_sprite);
+  }
+}
+-
+
+== Set position ==
+Only set the position if it's loaded
+-
+void VisibleGameObject::SetPosition(float x, float y)
+{
+  if(_isLoaded)
+  {
+    _sprite.SetPosition(x, y);
+  }
+}
+-
+
+== Includes ==
+-
+#include "visiblegameobject.hpp"
+-
+
+== @visiblegameobject.cpp ==
+Includes.
+
+Constructor.
+
+Destructor.
+
+Load.
+
+Draw.
+
+Set position.

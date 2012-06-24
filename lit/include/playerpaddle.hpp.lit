@@ -1,0 +1,36 @@
+== The player paddle header ==
+This represents the players paddle, which is renderable
+and responds to keyboard input.
+
+== The class ==
+This class inherits directly from the VisibleGameObject
+class. It has no custom code.
+-
+class PlayerPaddle : 
+  public VisibleGameObject
+{
+public:
+  PlayerPaddle();
+  ~PlayerPaddle();
+};
+-
+
+== Includes ==
+-
+#include "visiblegameobject.hpp"
+-
+
+== Include guard ==
+-
+#ifndef PLAYER_PADDLE_H
+#define PLAYER_PADDLE_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
+== @playerpaddle.hpp ==
+Include guard.

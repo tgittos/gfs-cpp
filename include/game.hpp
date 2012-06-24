@@ -3,8 +3,7 @@
 
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
-#include "splashscreen.hpp"
-#include "mainmenu.hpp"
+#include "playerpaddle.hpp"
 
 class Game
 {
@@ -24,6 +23,7 @@ private:
 
   static GameState _gameState;
   static sf::RenderWindow _mainWindow;
+  static PlayerPaddle _player1;
 
   static bool IsExiting();
   static void GameLoop();

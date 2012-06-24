@@ -35,6 +35,14 @@ a reference to the SFML window
 static sf::RenderWindow _mainWindow;
 -
 
+== Player paddle variable ==
+We need to store a reference to the players paddle, so
+the game can issue commands to it fomr the event polling
+loop.
+-
+static PlayerPaddle _player1;
+-
+
 == Start game method ==
 To that end, there is only a single public method, used
 to start the game. The game itself will handle all
@@ -79,6 +87,7 @@ private:
   
   Game state variable.
   Window reference variable.
+  Player paddle variable.
 
   Exit poller method.
   Game loop method.
@@ -95,8 +104,7 @@ and graphics SFML libraries.
 -
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
-#include "splashscreen.hpp"
-#include "mainmenu.hpp"
+#include "playerpaddle.hpp"
 -
 
 == Include guard ==

@@ -1,0 +1,92 @@
+== The visible game object header ==
+In the Pang game, there are going to be multiple types
+of object that we're going to want to render to the 
+screen.
+All of these objects, while functionally different in
+the end, will have common code to draw themselves, and
+so we can create a base abstract class for them to
+inherit from, so that the game knows that all objects
+that need to be drawn will have the methods required.
+
+== Constructor and destructor ==
+You'll note below that the destructor is a virtual
+method. This is because each different game entity may
+use different resources during the loading, drawing
+and setting position. So only the derrived class knows
+how to destroy itself.
+-
+VisibleGameObject();
+virtual ~VisibleGameObject();
+-
+
+== Virtual methods ==
+The load, draw and set position methods are all virtual.
+As with the destructor, this is because each derrived
+class will have it's own way of loading and drawing itself.
+The base class is mostly to provide some sort of
+interface for the game.
+
+== Load ==
+-
+virtual void Load(std::string filename);
+-
+
+== Draw ==
+-
+virtual void Draw(sf::RenderWindow& window);
+-
+
+== Set position ==
+-
+virtual void SetPosition(float x, float y);
+-
+
+== Variables ==
+Each visible game object is going to need to store
+internal data, such as the path of the image to
+load as pixel data, the data itself to draw when
+requested to draw, the position of the entity, and
+whether or not it has already been loaded.
+-
+sf::Sprite _sprite;
+sf::Image _image;
+std::string _filename;
+bool _isLoaded;
+-
+
+== The class ==
+-
+class VisibleGameObject
+{
+public:
+  Constructor and destructor.
+
+  Load.
+  Draw.
+  Set position.
+
+private:
+  Variables.
+};
+-
+
+== Includes ==
+-
+#include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
+-
+
+== Include guard ==
+-
+#ifndef VISIBLE_GAME_OBJECT_H
+#define VISIBLE_GAME_OBJECT_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
+== @visiblegameobject.hpp ==
+Include guard.
