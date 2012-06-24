@@ -28,7 +28,7 @@ void Game::Start(void)
     return;
 
   _mainWindow.Create(sf::VideoMode(1024,768,32),"Pang!");
-  _gameState = Game::Playing;
+  _gameState = Game::ShowingSplash;
   
   while(!IsExiting())
   {
@@ -50,13 +50,51 @@ bool Game::IsExiting()
 }
 -
 
+== Method to show the splash screen ==
+-
+void Game::ShowSplashScreen()
+{
+  SplashScreen splashScreen;
+  splashScreen.Show(_mainWindow);
+ _gameState = Game::ShowingMenu;
+}
+-
+
+== Method to show the menu ==
+Remember that the main menu has a poller in it that
+polls the SFML window. The call to mainMenu.show
+won't return until the user has made a selection.
+This will block all other actions in the main menu.
+
+If you wanted to do animation in the background, or
+in the menu itself, you'd need to include that in the
+polling loop, or find some other way to poll.
+-
+void Game::ShowMenu()
+{
+  MainMenu mainMenu;
+  MainMenu::MenuResult result = mainMenu.Show(_mainWindow);
+  switch(result)
+  {
+  case MainMenu::Exit:
+     _gameState = Game::Exiting;
+     break;
+   case MainMenu::Play:
+     _gameState = Game::Playing;
+     break;
+  }
+}
+-
+
 == The game loop ==
 The game loop is where all of the action happens. It is run
 as often as possible, while we're not exiting the app. 
 We poll SFML for events, processing events as they come in.
-Right now we only handle one event - the closed event.
-We set the state to exiting when we recieve that event, which
-will stop running the game loop and exit the application.
+We handle the SFML event differently, depending on what
+state weire in.
+When the state is playing, we set the state to exiting when we 
+recieve that event, which will stop running the game loop and 
+exit the application.
 If we don't recieve that event, and if the game is in the
 Playing state, we simply clear the window red and render that.
 -
@@ -68,6 +106,16 @@ void Game::GameLoop()
   
     switch(_gameState)
     {
+      case Game::ShowingSplash:
+        {
+          ShowSplashScreen();
+          break;
+        }
+      case Game::ShowingMenu:
+        {
+          ShowMenu();
+          break;
+        }
       case Game::Playing:
         {
           _mainWindow.Clear(sf::Color(255,0,0));
@@ -93,5 +141,7 @@ void Game::GameLoop()
 Includes.
 Start the game.
 Method to check if exiting.
+Method to show the splash screen.
+Method to show the menu.
 The game loop.
 Initial state.

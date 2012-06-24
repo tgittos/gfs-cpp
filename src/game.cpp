@@ -5,7 +5,7 @@ void Game::Start(void)
     return;
 
   _mainWindow.Create(sf::VideoMode(1024,768,32),"Pang!");
-  _gameState = Game::Playing;
+  _gameState = Game::ShowingSplash;
 
   while(!IsExiting())
   {
@@ -21,6 +21,26 @@ bool Game::IsExiting()
   else
     return false;
 }
+void Game::ShowSplashScreen()
+{
+  SplashScreen splashScreen;
+  splashScreen.Show(_mainWindow);
+ _gameState = Game::ShowingMenu;
+}
+void Game::ShowMenu()
+{
+  MainMenu mainMenu;
+  MainMenu::MenuResult result = mainMenu.Show(_mainWindow);
+  switch(result)
+  {
+  case MainMenu::Exit:
+     _gameState = Game::Exiting;
+     break;
+   case MainMenu::Play:
+     _gameState = Game::Playing;
+     break;
+  }
+}
 void Game::GameLoop()
 {
   sf::Event currentEvent;
@@ -29,6 +49,16 @@ void Game::GameLoop()
 
     switch(_gameState)
     {
+      case Game::ShowingSplash:
+        {
+          ShowSplashScreen();
+          break;
+        }
+      case Game::ShowingMenu:
+        {
+          ShowMenu();
+          break;
+        }
       case Game::Playing:
         {
           _mainWindow.Clear(sf::Color(255,0,0));
@@ -43,7 +73,5 @@ void Game::GameLoop()
     }
   }
 }
-
-
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::_mainWindow;

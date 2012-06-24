@@ -26,8 +26,10 @@ clean:
 	rm -Rf out
 	rm -Rf bin
 
-pang: game.o main.o
-	$(CC) out/game.o out/main.o $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@
+pang: includes game.o main.o
+	$(CC) out/game.o out/mainmenu.o out/splashscreen.o out/main.o $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@
+
+game.o: mainmenu.o splashscreen.o
 
 %: %.o
 	$(CC) out/$< $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@

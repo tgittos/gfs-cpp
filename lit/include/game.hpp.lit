@@ -50,6 +50,16 @@ app has been called to shut down.
 static bool IsExiting();
 -
 
+== Show splash screen method ==
+-
+static void ShowSplashScreen();
+-
+
+== Show menu method ==
+-
+static void ShowMenu();
+-
+
 == Game loop method ==
 Start the game loop.
 -
@@ -72,6 +82,8 @@ private:
 
   Exit poller method.
   Game loop method.
+  Show splash screen method.
+  Show menu method.
 
 };
 -
@@ -83,11 +95,14 @@ and graphics SFML libraries.
 -
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
+#include "splashscreen.hpp"
+#include "mainmenu.hpp"
 -
 
 == Include guard ==
 -
 #ifndef GAME_H
+#define GAME_H
 
 Includes.
 

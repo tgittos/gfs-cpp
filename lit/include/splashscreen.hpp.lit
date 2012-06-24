@@ -1,0 +1,64 @@
+== The splash screen header ==
+In Pang, every screen is responsible for handling input
+input on that screen.
+
+The tutorial wants me to pass in a reference to the
+window, in order to draw directly on it. In addition,
+this screen can then poll the window for events and act
+on them.
+
+This duplicates the polling code, and duplicates the
+rendering code. A better abstraction would be to have
+a drawing library that you inject into the screen for
+drawing, and a dispatcher system that polls events and
+dispatches them to the active window, and then maintain
+a stack of windows.
+
+However, that's a fair bit more complex than the solution
+in the tutorial, and for a game this size, probably
+overkill.
+
+So although I'm going to go with what the tutorial says,
+I wanted to record potential refactoring opportunities
+here in the documentation.
+
+== Show method signature ==
+Pass in a reference to the window everytime we want to
+show the window.
+We pass in a reference to the window variable by using
+the address-of operator (&)
+For more details on references vs. pointers, see:
+http://en.wikipedia.org/wiki/Reference_(C%2B%2B)
+-
+void Show(sf::RenderWindow& window);
+-
+
+== The class definition ==
+-
+class SplashScreen
+{
+public:
+  Show method signature.
+};
+-
+
+== Includes ==
+-
+#include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
+-
+
+== Include guard ==
+-
+#ifndef SPLASHSCREEN_H
+#define SPLASHSCREEN_H
+
+Includes.
+
+The class definition.
+
+#endif
+-
+
+== @splashscreen.hpp ==
+Include guard.

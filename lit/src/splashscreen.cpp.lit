@@ -1,0 +1,91 @@
+== The splash screen ==
+This is the splash screen that will be displayed when
+the game is first started, and probably when we pause
+the game as well?
+
+== Show ==
+The only method in this class is the show method.
+The show method is responsible for drawing the screen,
+and for polling the SFML event pump while the screen
+is shown for events.
+-
+void SplashScreen::Show(sf::RenderWindow& window)
+{
+  Load the image.
+
+  Create a sprite from the image.
+
+  Draw the sprite.
+
+  Poll the event pump for events.
+}
+-
+
+== Load the image ==
+Load the image from the disk, if we can't load it,
+exit the show method and render a black screen?
+-
+char path[] = "assets/splash-screen.png";
+sf::Image image;
+if(!image.LoadFromFile(path))
+{
+  return;
+}
+-
+
+== Create a sprite from the image ==
+In SFML, the concept of an image is different from the
+concept of a sprite. A sprite is the object that gets
+drawn to the screen. An image is the pixel data of an
+image.
+
+Two reasons this abstraction exists are:
+* two game objects can share a single image (in this
+case, the paddles)
+* one image can hold multiple game objects (sprite sheet)
+-
+sf::Sprite sprite(image);
+-
+
+== Draw the sprite ==
+-
+window.Draw(sprite);
+window.Display();
+-
+
+== Poll the event pump for events ==
+Because each window is responsible for handling it's
+own events, we need a way to get those events. The
+simplest way given we already have a reference to the
+SFML window is the poll the pump in the screen.
+
+Right now, we don't do anything on events.
+
+Note, the events namespace has changed with newer
+versions of SFML. I am using SFML 1.6:
+http://www.sfml-dev.org/tutorials/1.6/window-events.php
+-
+sf::Event event;
+while(true)
+{
+  while(window.GetEvent(event))
+  {
+    if(event.Type == sf::Event::KeyPressed ||
+       event.Type == sf::Event::MouseButtonPressed ||
+       event.Type == sf::Event::Closed)
+    {
+      return;
+    }
+  }
+}
+-
+
+== Includes ==
+-
+#include "SplashScreen.hpp"
+-
+
+== @splashscreen.cpp ==
+Includes.
+
+Show.

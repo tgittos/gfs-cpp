@@ -1,0 +1,115 @@
+== The main menu header ==
+The main menu is a representation of the main
+menu in Pang.
+
+The menu is implemented as a an external image,
+and pulled into the application. A rectangle
+defines the menu item, and what action is taken
+when the menu item is clicked.
+
+A possible improvement over this design would be
+to have the menu and menu items be drawn directly
+to the surface of the window, rather than be
+images imported into the app. This would save
+memory and loading time, at the cost of a unique
+user interface (which isn't always such a good
+thing)
+
+== The menu return states ==
+These are the various values the menu items can
+return.
+-
+enum MenuResult { 
+  Nothing, 
+  Exit, 
+  Play 
+};
+-
+
+== A menu item ==
+This class describes the menu as a whole. The menu
+is also comprised of menu items. These are
+declared as a struct inside the menu class.
+
+The sf::Rect describes the size and location of
+the menu item, and the MenuResult defines the
+result of clicking on the menu item.
+
+In a bigger game, the menu item would be abstracted
+so that it wasn't tied to a specific menu.
+However, Pang only has one menu, so that would be
+overkill in this instant.
+
+Remember YAGNI: You ain't gonna need it
+-
+struct MenuItem
+{
+public:
+  sf::Rect<int> rect;
+  MenuResult action;
+};
+-
+
+== Menu render function ==
+I don't know why the render method returns the
+result of clicking on the menu?
+-
+MenuResult Show(sf::RenderWindow& window);
+-
+
+== Get menu input ==
+The main menu is also responsible for handling it's
+own user input, much like the rest of the screens.
+These two methods handle user input.
+GetMenuResponse polls the window for user input, 
+and then passes clicks through to the 
+HandleClick method, which then determines which
+menu item was clicked.
+-
+MenuResult GetMenuResponse(sf::RenderWindow& window);
+MenuResult HandleClick(int x, int y);
+-
+
+== The menu items ==
+-
+std::list<MenuItem> _menuItems;
+-
+
+== The class ==
+-
+class MainMenu
+{
+public:
+  The menu return states.
+
+  A menu item.
+
+  Menu render function.
+
+private:
+  Get menu input.
+  The menu items.
+};
+-
+
+== Includes ==
+-
+#include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
+#include <list>
+-
+
+== Include guard ==
+-
+#ifndef MAIN_MENU_H
+#define MAIN_MENU_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
+== @mainmenu.hpp ==
+Include guard.

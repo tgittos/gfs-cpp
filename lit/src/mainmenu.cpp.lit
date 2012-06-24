@@ -1,0 +1,137 @@
+== The main menu ==
+This class represents the main menu. It will draw
+itself and handle it's own input.
+
+== Draw ==
+-
+MainMenu::MenuResult MainMenu::Show(sf::RenderWindow& window)
+{
+  Load menu image into sprite.
+
+  Setup play button clickable region.
+
+  Setup exit button clickable region.
+
+  Add menu items to menu item list.
+
+  window.Draw(sprite);
+  window.Display();
+
+  return GetMenuResponse(window);
+}
+-
+
+== Load menu image into sprite ==
+-
+sf::Image image;
+char path[] = "assets/main-menu.png";
+image.LoadFromFile(path);
+sf::Sprite sprite(image);
+-
+
+== Setup play button clickable region ==
+Because the image file contains the visual
+representation of the menu item, each menu item
+is a logical representation, a rectangle area that
+the user clicks on. Depending on where the user
+clicked, we will activate a different menu item.
+-
+MenuItem playButton;
+playButton.rect.Top= 145;
+playButton.rect.Bottom = 380;
+playButton.rect.Left = 0;
+playButton.rect.Right = 1023;
+playButton.action = Play;
+-
+
+== Setup exit button clickable region ==
+-
+MenuItem exitButton;
+exitButton.rect.Left = 0;
+exitButton.rect.Right = 1023;
+exitButton.rect.Top = 383;
+exitButton.rect.Bottom = 560;
+exitButton.action = Exit;
+-
+
+== Add menu items to menu item list ==
+-
+_menuItems.push_back(playButton);
+_menuItems.push_back(exitButton);
+-
+
+== Handle input ==
+In order to handle the input for this menu, we
+need to do two things:
+# Poll the window for events
+# Deal with mouse click events
+-
+Poll the window for events.
+
+Deal with mouse click events.
+-
+
+== Poll the window for events ==
+Poll the window for events, and pass click events
+through to HandleClick
+
+Implementation note: we can use a switch statement
+if we need to process a lot of events. However,
+with only two, an if statement is OK.
+-
+MainMenu::MenuResult MainMenu::GetMenuResponse(sf::RenderWindow& window)
+{
+  sf::Event menuEvent;
+  while(true)
+  {
+    while(window.GetEvent(menuEvent))
+    {
+      if (menuEvent.Type == sf::Event::MouseButtonPressed)
+      {
+        return HandleClick(menuEvent.MouseButton.X, menuEvent.MouseButton.Y);
+      }
+      if (menuEvent.Type == sf::Event::Closed)
+      {
+        return Exit;
+      }
+    }
+  } 
+}
+-
+
+== Deal with mouse click events ==
+When a mouse click comes in, we need to see where
+the click happened. We check each menu item to see
+if the click happened in it's bounds - if so, that
+menu item was clicked and we should return it's
+action.
+
+Assume origin is top right in SFML?
+-
+MainMenu::MenuResult MainMenu::HandleClick(int x, int y)
+{
+  std::list<MenuItem>::iterator it;
+  for (it = _menuItems.begin(); it != _menuItems.end(); it++)
+  {
+    sf::Rect<int> menuItemRect = (*it).rect;
+    if (menuItemRect.Bottom > y && menuItemRect.Top < y &&
+        menuItemRect.Left < x && menuItemRect.Right > x) 
+    {
+      return (*it).action;
+    }
+  }
+  return Nothing;
+}
+-
+
+== Includes ==
+-
+#include "mainmenu.hpp"
+-
+
+== @mainmenu.cpp ==
+Includes.
+
+Draw.
+
+Handle input. 
