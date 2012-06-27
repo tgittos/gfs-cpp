@@ -3,6 +3,7 @@
 
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
+#include <cassert>
 
 class VisibleGameObject
 {
@@ -12,7 +13,14 @@ public:
 
   virtual void Load(std::string filename);
   virtual void Draw(sf::RenderWindow& window);
+  virtual void Update(float elapsedTime) =0;
+
   virtual void SetPosition(float x, float y);
+  virtual sf::Vector2f GetPosition() const;
+  virtual bool IsLoaded() const;
+
+protected:
+  sf::Sprite& GetSprite();
 
 private:
   sf::Sprite _sprite;

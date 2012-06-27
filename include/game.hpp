@@ -3,13 +3,19 @@
 
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
+#include <cassert>
 #include "gameobjectmanager.hpp"
 
 class Game
 {
 
 public:
+  const static int SCREEN_WIDTH = 1024;
+  const static int SCREEN_HEIGHT = 768;
+
   static void Start();
+  static sf::RenderWindow& GetWindow();
+  const static sf::Input& GetInput();
 
 private:
   enum GameState {

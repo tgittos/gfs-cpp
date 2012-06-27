@@ -44,6 +44,14 @@ Remove a game object from memory by it's name
 void Remove(std::string name);
 -
 
+== Update all the game objects ==
+Update, in this context, is running the game object
+for a slice of time. The game object itself is
+responsible for what it does during the time slice.
+-
+void UpdateAll();
+-
+
 == Draw all the game objects ==
 -
 void DrawAll(sf::RenderWindow& window);
@@ -86,6 +94,7 @@ public:
   Get number of game objects.
   Get a game object.
 
+  Update all the game objects.
   Draw all the game objects.
 
 private:

@@ -81,6 +81,22 @@ int GameObjectManager::GetObjectCount() const
 }
 -
 
+== Update all game objects ==
+Run the game for all the game objects for a slice
+of time.
+-
+void GameObjectManager::UpdateAll()
+{
+  std::map<std::string, VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
+  float timeDelta = Game::GetWindow().GetFrameTime();
+  while(_gameObjects.end() != itr)
+  {
+    itr->second->Update(timeDelta);
+    itr++;
+  }
+}
+-
+
 == Draw all game objects method ==
 Loop through all the game objects and call their
 draw method
@@ -99,6 +115,7 @@ void GameObjectManager::DrawAll(sf::RenderWindow& window)
 == Includes ==
 -
 #include "gameobjectmanager.hpp"
+#include "game.hpp"
 -
 
 == @gameobjectmanager.cpp ==
@@ -115,5 +132,7 @@ Get game object method.
 Remove game object method.
 
 Game object count method.
+
+Update all game objects.
 
 Draw all game objects method.

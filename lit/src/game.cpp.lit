@@ -28,9 +28,11 @@ void Game::Start(void)
   if(_gameState != Uninitialized)
     return;
 
-  _mainWindow.Create(sf::VideoMode(1024,768,32),"Pang!");
+  _mainWindow.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32),"Pang!");
 
   Set up player 1.
+
+  Set up the ball.
 
   _gameState = Game::ShowingSplash;
   
@@ -47,17 +49,42 @@ void Game::Start(void)
 When we start the game, we need to create player one, who is
 a paddle.
 
-Note the position is hardcoded because the resolution is
-hardcoded. That's not great, and is a potiential place to
-refactor.
-
 After we create the first player, we add it to the object
 manager.
 -
 PlayerPaddle *player1 = new PlayerPaddle();
-player1->Load("assets/paddle.png");
-player1->SetPosition((1024/2)-45,700);
+player1->SetPosition((SCREEN_WIDTH / 2) - 45, 700);
 _gameObjectManager.Add("Paddle1", player1);
+-
+
+== Set up the ball ==
+We also need to set up a ball, which the players play with.
+-
+GameBall *ball = new GameBall();
+ball->SetPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 15);
+_gameObjectManager.Add("Ball", ball);
+-
+
+== Get window ==
+Get a reference to the render window from anywhere in the
+game.
+This introduces high coupling, and needs to be refactored
+out.
+-
+sf::RenderWindow& Game::GetWindow()
+{
+  return _mainWindow;
+}
+-
+
+== Get input ==
+Like above, introduces a high amount of coupling and needs
+to be refactored out.
+-
+const sf::Input& Game::GetInput()
+{
+  return _mainWindow.GetInput();
+}
 -
 
 == Method to check if exiting ==
@@ -122,30 +149,28 @@ Playing state, we simply clear the window red and render that.
 void Game::GameLoop()
 {
   sf::Event currentEvent;
-  while(_mainWindow.GetEvent(currentEvent))
-  {
+  _mainWindow.GetEvent(currentEvent);
   
-    switch(_gameState)
-    {
-      case Game::ShowingSplash:
-        {
-          ShowSplashScreen();
-          break;
-        }
-      case Game::ShowingMenu:
-        {
-          ShowMenu();
-          break;
-        }
-      case Game::Playing:
-        {
-          Render the game.
-        
-          Handle game input events.
+  switch(_gameState)
+  {
+    case Game::ShowingSplash:
+      {
+        ShowSplashScreen();
+        break;
+      }
+    case Game::ShowingMenu:
+      {
+        ShowMenu();
+        break;
+      }
+    case Game::Playing:
+      {
+        Render the game.
+      
+        Handle game input events.
 
-          break;
-        }
-    }
+        break;
+      }
   }
 }
 -
@@ -154,6 +179,7 @@ void Game::GameLoop()
 Render the game!
 -
 _mainWindow.Clear(sf::Color(0,0,0));
+_gameObjectManager.UpdateAll();
 _gameObjectManager.DrawAll(_mainWindow);
 _mainWindow.Display();
 -
@@ -181,11 +207,14 @@ if(currentEvent.Type == sf::Event::KeyPressed)
 #include "splashscreen.hpp"
 #include "mainmenu.hpp"
 #include "playerpaddle.hpp"
+#include "gameball.hpp"
 -
 
 == @game.cpp ==
 Includes.
 Start the game.
+Get window.
+Get input.
 Method to check if exiting.
 Method to show the splash screen.
 Method to show the menu.

@@ -1,4 +1,5 @@
 #include "gameobjectmanager.hpp"
+#include "game.hpp"
 GameObjectManager::GameObjectManager()
 {
 }
@@ -31,6 +32,16 @@ void GameObjectManager::Remove(std::string name)
 int GameObjectManager::GetObjectCount() const
 {
   return _gameObjects.size();
+}
+void GameObjectManager::UpdateAll()
+{
+  std::map<std::string, VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
+  float timeDelta = Game::GetWindow().GetFrameTime();
+  while(_gameObjects.end() != itr)
+  {
+    itr->second->Update(timeDelta);
+    itr++;
+  }
 }
 void GameObjectManager::DrawAll(sf::RenderWindow& window)
 {

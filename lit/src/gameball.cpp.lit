@@ -1,0 +1,43 @@
+== The game ball ==
+This class represents the game ball. It is responsible 
+for handling it's own updates (eventually) and it's
+own asset loading and rendering.
+
+== Constructor ==
+Load the asset in
+-
+GameBall::GameBall()
+{
+  Load("assets/ball.png");
+  assert(IsLoaded());
+
+  GetSprite().SetCenter(15, 15);
+}
+-
+
+== Destructor ==
+-
+GameBall::~GameBall()
+{
+}
+-
+
+== Update ==
+Just an empty update method for now, required because
+we're inheriting from VisibleGameObject.
+-
+void GameBall::Update(float elapsedTime)
+{
+}
+-
+
+== Includes ==
+-
+#include "gameball.hpp"
+-
+
+== @gameball.cpp ==
+Includes.
+Constructor.
+Destructor.
+Update.

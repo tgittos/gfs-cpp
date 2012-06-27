@@ -29,11 +29,11 @@ clean:
 pang: includes cgame.o main.o
 	$(CC) out/cgame.o out/main.o $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@
 
-cgame.o: game.o player.o mainmenu.o splashscreen.o gameobjectmanager.o
-	ld -r out/game.o out/player.o out/mainmenu.o out/splashscreen.o out/gameobjectmanager.o -o out/cgame.o
+cgame.o: game.o players.o mainmenu.o splashscreen.o gameobjectmanager.o
+	ld -r out/game.o out/players.o out/mainmenu.o out/splashscreen.o out/gameobjectmanager.o -o out/cgame.o
 
-player.o: playerpaddle.o visiblegameobject.o
-	ld -r out/playerpaddle.o out/visiblegameobject.o -o out/player.o
+players.o: playerpaddle.o gameball.o visiblegameobject.o
+	ld -r out/playerpaddle.o out/gameball.o out/visiblegameobject.o -o out/players.o
 
 %: %.o
 	$(CC) out/$< $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@

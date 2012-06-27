@@ -14,6 +14,7 @@ public:
   int GetObjectCount() const;
   VisibleGameObject* Get(std::string name) const;
 
+  void UpdateAll();
   void DrawAll(sf::RenderWindow& window);
 
 private:

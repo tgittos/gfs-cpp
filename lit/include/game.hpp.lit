@@ -50,6 +50,44 @@ interactions after that, and all memory management.
 static void Start();
 -
 
+== Get window ==
+The get window method gets the render window off of the
+game.
+
+This method introduces two kinds of paradigms of
+messaging, and couples whatever method calls into
+this method tightly with the game. This is not great.
+I would rather stick with injecting windows where we
+need them rather than pulling them off of a global
+game object.
+
+Chalk this another method to refactor away
+-
+static sf::RenderWindow& GetWindow();
+-
+
+== Get input ==
+Like the get window method, this introduces coupling
+between a game object and the game.
+
+Refactor this away too.
+-
+const static sf::Input& GetInput();
+-
+
+== Public constants ==
+Screen width and height, public so that we can pull it
+for game logic. Maybe needs to be decoupled too.
+
+Try and refactor this away, though it may be pretty hard.
+We don't want to pass in 5 params to each method.
+Maybe a game settings object, especially if you want to be
+able to resize the window.
+-
+const static int SCREEN_WIDTH = 1024;
+const static int SCREEN_HEIGHT = 768;
+-
+
 == Exit poller method ==
 This method is used inside the class to determine if the
 app has been called to shut down.
@@ -79,7 +117,11 @@ class Game
 {
 
 public:
+  Public constants.
+  
   Start game method.
+  Get window.
+  Get input.
 
 private:
   State enumeration.
@@ -103,6 +145,7 @@ and graphics SFML libraries.
 -
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
+#include <cassert>
 #include "gameobjectmanager.hpp"
 -
 

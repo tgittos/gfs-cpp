@@ -36,9 +36,33 @@ virtual void Load(std::string filename);
 virtual void Draw(sf::RenderWindow& window);
 -
 
+== Update ==
+The update method is a pure virtual method. The base
+method does absolutely nothing, so there's no reason
+for it not to be pure virtual.
+-
+virtual void Update(float elapsedTime) =0;
+-
+
 == Set position ==
 -
 virtual void SetPosition(float x, float y);
+-
+
+== Get position ==
+-
+virtual sf::Vector2f GetPosition() const;
+-
+
+== Is loaded ==
+-
+virtual bool IsLoaded() const;
+-
+
+== Get sprite ==
+Allow derrived classes to access the sprite itself.
+-
+sf::Sprite& GetSprite();
 -
 
 == Variables ==
@@ -63,7 +87,14 @@ public:
 
   Load.
   Draw.
+  Update.
+
   Set position.
+  Get position.
+  Is loaded.
+
+protected:
+  Get sprite.
 
 private:
   Variables.
@@ -74,6 +105,7 @@ private:
 -
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
+#include <cassert>
 -
 
 == Include guard ==

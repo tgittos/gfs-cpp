@@ -2,9 +2,29 @@
 This represents the players paddle, which is renderable
 and responds to keyboard input.
 
+== Update method ==
+Because the update method is pure virtual in the base
+class, we need to implement the method.
+-
+void Update(float elapsedTime);
+-
+
+== Get velocity method ==
+-
+float GetVelocity() const;
+-
+
+== Variables ==
+We need to be able to store the paddles velocity and max
+velocity in order to be able to render it properly.
+A negaative velocity represents movement left, and a
+positive velocity represents movement right.
+-
+float _velocity;
+float _maxVelocity;
+-
+
 == The class ==
-This class inherits directly from the VisibleGameObject
-class. It has no custom code.
 -
 class PlayerPaddle : 
   public VisibleGameObject
@@ -12,11 +32,19 @@ class PlayerPaddle :
 public:
   PlayerPaddle();
   ~PlayerPaddle();
+
+  Update method.
+
+  Get velocity method.
+
+private:
+  Variables.
 };
 -
 
 == Includes ==
 -
+#include "game.hpp" // this is a crappy reference
 #include "visiblegameobject.hpp"
 -
 

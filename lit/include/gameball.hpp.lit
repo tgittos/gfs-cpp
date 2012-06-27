@@ -1,0 +1,47 @@
+== Game ball class header ==
+The class that represents the ball in the game.
+Eventually we will be animating this based on the
+rules of the game, but for now, we just load in
+the graphical asset.
+
+== Update ==
+We need to implement update when inheriting from
+VisibleGameObject.
+Eventually this will do stuff, but right now, it
+wont.
+-
+void Update(float elaspedTime);
+-
+
+== The class ==
+-
+class GameBall :
+  public VisibleGameObject
+{
+public:
+  GameBall();
+  virtual ~GameBall();
+
+  Update.
+};
+-
+
+== Includes ==
+-
+#include "visiblegameobject.hpp"
+-
+
+== Include guard ==
+-
+#ifndef GAME_BALL_H
+#define GAME_BALL_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
+== @gameball.hpp ==
+Include guard.

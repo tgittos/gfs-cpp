@@ -4,9 +4,135 @@ controlled by the player to play Pang against the
 AI
 
 == Constructor ==
+Initialize some varialbes during the construction,
+and load the asset
 -
-PlayerPaddle::PlayerPaddle()
+PlayerPaddle::PlayerPaddle() :
+  _velocity(0), _maxVelocity(600.0f)
 {
+  Load the asset.
+
+  Set sprite center.
+}
+-
+
+== Load the asset ==
+Load the asset that represents the paddle, and
+die if we can't find it
+-
+char path[] = "assets/paddle.png";
+Load(path);
+assert(IsLoaded());
+-
+
+== Set sprite center ==
+Set the center of the sprite to the center of the
+bitmap data.
+-
+sf::Sprite& sprite = GetSprite();
+sf::Vector2f size = sprite.GetSize();
+sprite.SetCenter(size.x / 2, size.y / 2);
+-
+
+== Update the sprite ==
+This is a game logic method, and is responsible for
+running an update on this object. The game shouldn't
+know what this game object does while the game
+is running - the object should be responsible for
+it's own logic.
+
+So we pass in the time elapsed, and the paddle will
+do it's thing after querying what the user is doing
+from the game.
+
+I don't much like this type of relationship. I'd
+prefer if the game sent the players interaction and
+the time elapsed to all of the objects to update
+them. I might do some refactoring after I finish the
+tutorial and make the changes that I want to make.
+-
+void PlayerPaddle::Update(float elapsedTime)
+{
+  Set velocity based on user input.
+
+  Limit velocity by maximum velocity.
+
+  Update the position of the paddle.
+}
+-
+
+== Set velocity based on user input ==
+The left key moves left, the right key moves right. 
+If neither key is set, the paddle slows down.
+Movement sets the velocity.
+-
+if(Game::GetInput().IsKeyDown(sf::Key::Left))
+{
+  _velocity -= 3.f;
+}
+if(Game::GetInput().IsKeyDown(sf::Key::Right))
+{
+  _velocity += 3.f;
+}
+if(!Game::GetInput().IsKeyDown(sf::Key::Left) &&
+   !Game::GetInput().IsKeyDown(sf::Key::Right))
+{
+  float deceleration = 2.;
+  if (_velocity < -deceleration)
+  {
+    _velocity += deceleration;
+  } else if (_velocity > deceleration)
+  {
+    _velocity -= deceleration;
+  } else 
+  {
+    _velocity = 0.f;
+  }
+}
+-
+
+== Limit velocity by maximum velocity ==
+Velocity is limited by a max, so we don't end up
+going so fast we can't control the paddle.
+-
+if(_velocity > _maxVelocity)
+{
+  _velocity = _maxVelocity;
+}
+if(_velocity < -_maxVelocity)
+{
+  _velocity = -_maxVelocity;
+}
+-
+
+== Update the position of the paddle ==
+Apply the paddle's velocity and set the position.
+Note, the paddle can bounce off the screen edge.
+-
+sf::Vector2f pos = GetPosition();
+sf::Vector2f spriteSize = GetSprite().GetSize();
+if(pos.x <= spriteSize.x / 2)
+{
+  if(_velocity < 0)
+  {
+    _velocity = -_velocity;
+  }
+}
+if(pos.x >= (Game::SCREEN_WIDTH - spriteSize.x / 2))
+{
+  if(_velocity > 0)
+  {
+    _velocity = -_velocity;
+  }
+}
+GetSprite().Move(_velocity * elapsedTime, 0);
+-
+
+== Get the velocity ==
+-
+float PlayerPaddle::GetVelocity() const
+{
+  return _velocity;
 }
 -
 
@@ -28,3 +154,7 @@ Includes.
 Constructor.
 
 Destructor.
+
+Get the velocity.
+
+Update the sprite.

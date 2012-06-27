@@ -2,7 +2,6 @@
 This class represents every object that needs to
 be drawn. Note that it's an abstract class and that
 it isn't intended to be created directly.
-Even though there are no pure virtual methods.
 
 == Constructor ==
 -
@@ -55,6 +54,12 @@ void VisibleGameObject::Draw(sf::RenderWindow& window)
 }
 -
 
+== Update ==
+You'll notice we're not delcaring the update method here.
+That is because it is a pure virtual method, which means
+it has no implementation on the base class, and all
+derived classes need to implement it themselves.
+
 == Set position ==
 Only set the position if it's loaded
 -
@@ -64,6 +69,36 @@ void VisibleGameObject::SetPosition(float x, float y)
   {
     _sprite.SetPosition(x, y);
   }
+}
+-
+
+== Get position ==
+If the object is loaded, return the position of the
+object. If it's not loaded, return a default vector.
+-
+sf::Vector2f VisibleGameObject::GetPosition() const
+{
+  if(_isLoaded)
+  {
+    return _sprite.GetPosition();
+  }
+  return sf::Vector2f();
+}
+-
+
+== Get sprite ==
+-
+sf::Sprite& VisibleGameObject::GetSprite()
+{
+  return _sprite;
+}
+-
+
+== Is loaded ==
+-
+bool VisibleGameObject::IsLoaded() const
+{
+  return _isLoaded;
 }
 -
 
@@ -84,3 +119,9 @@ Load.
 Draw.
 
 Set position.
+
+Get position.
+
+Get sprite.
+
+Is loaded.
