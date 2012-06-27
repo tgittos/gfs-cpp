@@ -26,12 +26,14 @@ clean:
 	rm -Rf out
 	rm -Rf bin
 
-pang: includes game.o main.o
-	$(CC) out/game.o out/mainmenu.o out/splashscreen.o out/main.o out/playerpaddle.o out/visiblegameobject.o $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@
+pang: includes cgame.o main.o
+	$(CC) out/cgame.o out/main.o $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@
 
-game.o: playerpaddle.o mainmenu.o splashscreen.o
+cgame.o: game.o player.o mainmenu.o splashscreen.o gameobjectmanager.o
+	ld -r out/game.o out/player.o out/mainmenu.o out/splashscreen.o out/gameobjectmanager.o -o out/cgame.o
 
-playerpaddle.o: visiblegameobject.o
+player.o: playerpaddle.o visiblegameobject.o
+	ld -r out/playerpaddle.o out/visiblegameobject.o -o out/player.o
 
 %: %.o
 	$(CC) out/$< $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@

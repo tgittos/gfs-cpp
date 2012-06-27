@@ -8,7 +8,7 @@ be able to use it later.
 -
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::_mainWindow;
-PlayerPaddle Game::_player1;
+GameObjectManager Game::_gameObjectManager;
 -
 
 == Start the game ==
@@ -29,9 +29,10 @@ void Game::Start(void)
     return;
 
   _mainWindow.Create(sf::VideoMode(1024,768,32),"Pang!");
-  _gameState = Game::ShowingSplash;
 
   Set up player 1.
+
+  _gameState = Game::ShowingSplash;
   
   while(!IsExiting())
   {
@@ -49,9 +50,14 @@ a paddle.
 Note the position is hardcoded because the resolution is
 hardcoded. That's not great, and is a potiential place to
 refactor.
+
+After we create the first player, we add it to the object
+manager.
 -
-_player1.Load("assets/paddle.png");
-_player1.SetPosition((1024/2)-45,700);
+PlayerPaddle *player1 = new PlayerPaddle();
+player1->Load("assets/paddle.png");
+player1->SetPosition((1024/2)-45,700);
+_gameObjectManager.Add("Paddle1", player1);
 -
 
 == Method to check if exiting ==
@@ -148,7 +154,7 @@ void Game::GameLoop()
 Render the game!
 -
 _mainWindow.Clear(sf::Color(0,0,0));
-_player1.Draw(_mainWindow);
+_gameObjectManager.DrawAll(_mainWindow);
 _mainWindow.Display();
 -
 
@@ -174,6 +180,7 @@ if(currentEvent.Type == sf::Event::KeyPressed)
 #include "game.hpp"
 #include "splashscreen.hpp"
 #include "mainmenu.hpp"
+#include "playerpaddle.hpp"
 -
 
 == @game.cpp ==
