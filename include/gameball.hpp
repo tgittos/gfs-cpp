@@ -11,6 +11,14 @@ public:
   virtual ~GameBall();
 
   void Update(float elaspedTime);
+
+private:
+  float _velocity;
+  float _angle;
+  float _elapsedTimeSinceStart;
+
+  float LinearVelocityX(float angle);
+  float LinearVelocityY(float angle);
 };
 
 #endif

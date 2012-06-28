@@ -4,15 +4,222 @@ for handling it's own updates (eventually) and it's
 own asset loading and rendering.
 
 == Constructor ==
-Load the asset in
+Start the game with the ball flying at a random angle.
 -
-GameBall::GameBall()
+GameBall::GameBall() :
+  _velocity(230.f),
+  _elapsedTimeSinceStart(0.f)
 {
   Load("assets/ball.png");
   assert(IsLoaded());
 
   GetSprite().SetCenter(15, 15);
+
+  sf::Randomizer::SetSeed(std::clock());
+  _angle = (float)sf::Randomizer::Random(0, 360);
 }
+-
+
+== Running the game ==
+Before we get into the logic of running the game, which
+seems to live mostly in the ball, we should cover how
+the component vector for velocity is calculated.
+
+Before that, going back to all the logic living in the
+ball, that doesn't seem right.
+The game itself should contain rules about how the 
+various objects interact. If the ball is responsible
+for all of the games logic, then the ball needs to know
+about the paddle, and the game requires a ball.
+
+If we wanted to switch the ball with a hamster, we'd
+need to duplicate all the code here, instead of
+dropping it in as a ball replacement. This is a silly
+and contrived example, but still.
+
+This might be a good candidate for an MVC refactor of
+the game.
+
+== Get x linear velocity ==
+-
+float GameBall::LinearVelocityX(float angle)
+{
+  angle = fmodf(angle - 90.f, 360.f);
+  return (float)cos(angle * ( 3.1415926 / 180.f ));
+}
+-
+
+== Get y linear velocity ==
+-
+float GameBall::LinearVelocityY(float angle)
+{
+  angle = fmodf(angle -= 90.f, 360.f);
+  return (float)sin(angle * (3.1415926 / 180.f ));
+}
+-
+
+== Update ==
+Here we have all the logic for running the game ball
+during a time slice.
+
+The ball will bounce around the game play area, and
+the playeres can hit the ball to each other.
+
+The ball encapsulates the logic of how it bounces off
+paddles and the walls, and what those angles and
+velocities look like.
+-
+void GameBall::Update(float elapsedTime)
+{
+  _elapsedTimeSinceStart += elapsedTime;
+
+  Delay game start.
+
+  Calculate move distance.
+
+  sf::Vector2f pos = GetPosition();
+  float width = GetWidth();
+  float height = GetHeight();
+
+  Collide with the walls.
+
+  Interact with player 1 paddle.
+
+  Bounce ball off top of screen.
+
+  Reset ball if player misses.
+
+  Move the ball.
+}
+-
+
+== Delay game start ==
+Don't start the game until 3 seconds have passed.
+We should probably display some kind of timeout on
+the screen for this.
+-
+if(_elapsedTimeSinceStart < 3.f)
+{
+  return;
+}
+-
+
+== Calculate move distance ==
+Move the ball by it's component velocity individually.
+Probably easier than vector math, but we can
+refactor this to use vector math.
+-
+float distance = _velocity * elapsedTime;
+float moveX = LinearVelocityX(_angle) * distance;
+float moveY = LinearVelocityY(_angle) * distance;
+-
+
+== Collide with the walls ==
+Calculate the new velocity/bearing of the ball after a
+collision with the wall, if we have indeed collided
+with the wall.
+
+Note that this isn't a simple reflection, we do some
+correcting to ensure we don't end up simply bouncing
+from edge to edge
+
+Also, for some reason, we're not using the bounding box
+of the ball, and the tutorial has us check if we will 
+collide AFTER the move, and then change angle based on
+that, which I think is a little silly.
+-
+if(pos.x - width / 2 <= 0 ||
+   pos.x + width / 2 >= Game::SCREEN_WIDTH)
+{
+  _angle = 360.f - _angle;
+  // correct for edge to edge bounching
+  if(_angle > 260.f && _angle < 280.f ||
+     _angle > 80.f && _angle < 100.f)
+  {
+    _angle += 20.f;
+  }
+  moveX = -moveX;
+}
+-
+
+== Interact with player 1 paddle ==
+Check to see if player 1 successfully hit the ball. 
+If so, calculate the return velocity and angle based
+on the velocity of the paddle. Allows players to
+affect the ball more than just being a mobile wall.
+
+Note, in this snippet of code, AGAIN we call into the
+game to get an object that should be dependency injected.
+Holy moly.
+-
+PlayerPaddle* player1 = dynamic_cast<PlayerPaddle*>(Game::GetGameObjectManager().Get("Paddle1"));
+assert(NULL != player1);
+
+sf::Rect<float> player1BoundingBox = player1->GetBoundingRect();
+
+if(player1BoundingBox.Intersects(GetBoundingRect()))
+{
+  _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
+  moveY = -moveY;
+
+  // if situation where the ball is inside the paddle
+  if(GetBoundingRect().Bottom > player1->GetBoundingRect().Top)
+  {
+    SetPosition(pos.x, player1->GetBoundingRect().Top - width / 2);
+  }
+
+  Adjust ball angle by player velocity.
+
+  _velocity += 5.f;
+}
+-
+
+== Adjust ball angle by player velocity ==
+If the player is moving when the ball is stuck, increase
+the angle by 20 degrees
+-
+float playerVelocity = player1->GetVelocity();
+if (playerVelocity < 0)
+{
+  _angle = fmodf(_angle - 20.f, 360.f);
+}
+if (playerVelocity > 0)
+{
+  _angle = fmodf(_angle + 20.f, 360.f);
+}
+-
+
+== Bounce ball off top of screen ==
+Normally, if the ball went off the top of the screen, the
+player would win a point and we would reset the ball.
+However, we haven't done the enemy paddle, so for now, lets
+just reflect it back.
+-
+if(pos.y - height / 2 <= 0)
+{
+  _angle = 180 - _angle;
+  moveY = -moveY;
+}
+-
+
+== Reset ball if player misses ==
+If the player misses the ball, reset it.
+
+Refactor out the reference to the Game class.
+-
+if(pos.y + height / 2 >= Game::SCREEN_HEIGHT)
+{
+  GetSprite().SetPosition(Game::SCREEN_WIDTH / 2, Game::SCREEN_HEIGHT / 2);
+  _angle = (float)sf::Randomizer::Random(0, 360);
+  _velocity = 220.f;
+  _elapsedTimeSinceStart = 0.f;
+}
+-
+
+== Move the ball ==
+Finally, move the ball.
+-
+GetSprite().Move(moveX, moveY);
 -
 
 == Destructor ==
@@ -22,18 +229,12 @@ GameBall::~GameBall()
 }
 -
 
-== Update ==
-Just an empty update method for now, required because
-we're inheriting from VisibleGameObject.
--
-void GameBall::Update(float elapsedTime)
-{
-}
--
-
 == Includes ==
 -
 #include "gameball.hpp"
+#include <math.h>
+#include "game.hpp"
+#include "playerpaddle.hpp"
 -
 
 == @gameball.cpp ==
@@ -41,3 +242,5 @@ Includes.
 Constructor.
 Destructor.
 Update.
+Get x linear velocity.
+Get y linear velocity.

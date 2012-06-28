@@ -13,6 +13,29 @@ wont.
 void Update(float elaspedTime);
 -
 
+== Get x linear velocity ==
+Given the bearing of the ball, and it's velocity,
+find out what the x component of that velocity
+is
+-
+float LinearVelocityX(float angle);
+- 
+
+== Get y linear velocity ==
+Same as x linear velocity, but on the y component.
+-
+float LinearVelocityY(float angle);
+-
+
+== Private variables ==
+Velocity, angle (bearing) and time elapsed since
+start (of game?)
+-
+float _velocity;
+float _angle;
+float _elapsedTimeSinceStart;
+-
+
 == The class ==
 -
 class GameBall :
@@ -23,6 +46,12 @@ public:
   virtual ~GameBall();
 
   Update.
+
+private:
+  Private variables.
+
+  Get x linear velocity.
+  Get y linear velocity.
 };
 -
 

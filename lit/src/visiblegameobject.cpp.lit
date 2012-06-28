@@ -94,6 +94,54 @@ sf::Sprite& VisibleGameObject::GetSprite()
 }
 -
 
+== Get width ==
+-
+float VisibleGameObject::GetWidth() const
+{
+  if(_isLoaded)
+  {
+    return _sprite.GetSize().x;
+  }
+  return 0.f;
+}
+-
+
+== Get height ==
+-
+float VisibleGameObject::GetHeight() const
+{
+  if(_isLoaded)
+  {
+    return _sprite.GetSize().y;
+  }
+  return 0.f;
+}
+-
+
+== Get bounding rectangle ==
+A bounding rectangle is a rectangle that represents
+the edges of a sprite. It is used in a fast way to
+calculate collisions that disregards the objects
+actual shape.
+
+The reason we devide the size by 2 is because we set
+the objects center to be the center of the sprite,
+not the top left which is the default.
+-
+sf::Rect<float> VisibleGameObject::GetBoundingRect() const
+{
+  sf::Vector2f size = _sprite.GetSize();
+  sf::Vector2f pos = _sprite.GetPosition();
+
+  return sf::Rect<float>(
+    pos.x - size.x / 2,
+    pos.y - size.y / 2,
+    pos.x + size.x / 2,
+    pos.y + size.y / 2
+  );
+}
+-
+
 == Is loaded ==
 -
 bool VisibleGameObject::IsLoaded() const
@@ -107,7 +155,11 @@ bool VisibleGameObject::IsLoaded() const
 #include "visiblegameobject.hpp"
 -
 
-== @visiblegameobject.cpp ==
+== Formatted class ==
+Just a wrapper so that we can format the class nicely.
+This compensates for a lack in Literati, but until I
+get it fixed, this will do nicely.
+-
 Includes.
 
 Constructor.
@@ -122,6 +174,16 @@ Set position.
 
 Get position.
 
+Get width.
+
+Get height.
+
+Get bounding rectangle.
+
 Get sprite.
 
 Is loaded.
+-
+
+== @visiblegameobject.cpp ==
+Formatted class.

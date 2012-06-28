@@ -16,6 +16,7 @@ public:
   static void Start();
   static sf::RenderWindow& GetWindow();
   const static sf::Input& GetInput();
+  static GameObjectManager& GetGameObjectManager();
 
 private:
   enum GameState {

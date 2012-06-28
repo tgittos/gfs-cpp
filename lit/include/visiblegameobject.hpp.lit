@@ -54,6 +54,21 @@ virtual void SetPosition(float x, float y);
 virtual sf::Vector2f GetPosition() const;
 -
 
+== Get width ==
+-
+virtual float GetWidth() const;
+-
+
+== Get height ==
+-
+virtual float GetHeight() const;
+-
+
+== Get bounding rectangle ==
+-
+virtual sf::Rect<float> GetBoundingRect() const;
+-
+
 == Is loaded ==
 -
 virtual bool IsLoaded() const;
@@ -91,6 +106,9 @@ public:
 
   Set position.
   Get position.
+  Get width.
+  Get height.
+  Get bounding rectangle.
   Is loaded.
 
 protected:

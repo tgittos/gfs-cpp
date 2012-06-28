@@ -87,6 +87,16 @@ const sf::Input& Game::GetInput()
 }
 -
 
+== Get object manager ==
+Like above, introduces a high amount of coupling and needs
+to be refactored out.
+-
+GameObjectManager& Game::GetGameObjectManager()
+{
+  return _gameObjectManager;
+}
+-
+
 == Method to check if exiting ==
 -
 bool Game::IsExiting()
@@ -215,6 +225,7 @@ Includes.
 Start the game.
 Get window.
 Get input.
+Get object manager.
 Method to check if exiting.
 Method to show the splash screen.
 Method to show the menu.

@@ -35,6 +35,10 @@ const sf::Input& Game::GetInput()
 {
   return _mainWindow.GetInput();
 }
+GameObjectManager& Game::GetGameObjectManager()
+{
+  return _gameObjectManager;
+}
 bool Game::IsExiting()
 {
   if(_gameState == Game::Exiting)

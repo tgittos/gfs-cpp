@@ -75,6 +75,15 @@ Refactor this away too.
 const static sf::Input& GetInput();
 -
 
+== Get object manager ==
+Like the get window and get input, this introduces
+coupling.
+
+Refactor away.
+-
+static GameObjectManager& GetGameObjectManager();
+-
+
 == Public constants ==
 Screen width and height, public so that we can pull it
 for game logic. Maybe needs to be decoupled too.
@@ -122,6 +131,7 @@ public:
   Start game method.
   Get window.
   Get input.
+  Get object manager.
 
 private:
   State enumeration.
