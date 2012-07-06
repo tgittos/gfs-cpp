@@ -1,4 +1,5 @@
 #include "mainmenu.hpp"
+#include "servicelocator.hpp"
 MainMenu::MenuResult MainMenu::Show(sf::RenderWindow& window)
 {
   sf::Image image;
@@ -56,6 +57,10 @@ MainMenu::MenuResult MainMenu::HandleClick(int x, int y)
     if (menuItemRect.Bottom > y && menuItemRect.Top < y &&
         menuItemRect.Left < x && menuItemRect.Right > x)
     {
+      if(ServiceLocator::GetAudio()->IsSongPlaying())
+      {
+        ServiceLocator::GetAudio()->StopAllSounds();
+      }
       return (*it).action;
     }
   }

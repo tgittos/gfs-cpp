@@ -1,7 +1,8 @@
-#include "gameball.hpp"
 #include <math.h>
+#include "gameball.hpp"
 #include "game.hpp"
 #include "playerpaddle.hpp"
+#include "servicelocator.hpp"
 GameBall::GameBall() :
   _velocity(230.f),
   _elapsedTimeSinceStart(0.f)
@@ -44,7 +45,19 @@ void GameBall::Update(float elapsedTime)
     {
       _angle += 20.f;
     }
+    // correct for moving off the field
+    if (pos.x - width / 2 < 0)
+    {
+      SetPosition(width / 2 + 1, pos.y);
+    }
+    if (pos.x + width / 2 > Game::SCREEN_WIDTH)
+    {
+      SetPosition(Game::SCREEN_WIDTH - width / 2 + 1, pos.y);
+    }
+    // move
     moveX = -moveX;
+  
+    ServiceLocator::GetAudio()->PlaySound("assets/wall-hit.wav");
   }
 
   PlayerPaddle* player1 = dynamic_cast<PlayerPaddle*>(Game::GetGameObjectManager().Get("Paddle1"));
@@ -74,6 +87,8 @@ void GameBall::Update(float elapsedTime)
     }
   
     _velocity += 5.f;
+  
+    ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
   }
 
   if(pos.y - height / 2 <= 0)

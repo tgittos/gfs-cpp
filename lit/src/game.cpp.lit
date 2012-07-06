@@ -30,6 +30,8 @@ void Game::Start(void)
 
   _mainWindow.Create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32),"Pang!");
 
+  Set up audio system.
+
   Set up player 1.
 
   Set up the ball.
@@ -43,6 +45,16 @@ void Game::Start(void)
 
   _mainWindow.Close();
 }
+-
+
+== Set up audio system ==
+Instantiate a new SFML sound provider to provider sound, and
+register it for use elsewhere in the game.
+Start playing the soundtrack, and loop it.
+-
+SFMLSoundProvider soundProvider;
+ServiceLocator::RegisterAudioService(&soundProvider);
+ServiceLocator::GetAudio()->PlaySong("assets/Soundtrack.ogg",true);
 -
 
 == Set up player 1 ==
@@ -218,6 +230,8 @@ if(currentEvent.Type == sf::Event::KeyPressed)
 #include "mainmenu.hpp"
 #include "playerpaddle.hpp"
 #include "gameball.hpp"
+#include "servicelocator.hpp"
+#include "sfmlsoundprovider.hpp"
 -
 
 == @game.cpp ==

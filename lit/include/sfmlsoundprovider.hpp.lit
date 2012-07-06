@@ -1,0 +1,89 @@
+== The SFML Sound Provider Header ==
+This header describes a class that implements the
+IAudioProvider interface, leveraging the audio 
+capability in SFML.
+
+== Play sound ==
+-
+virtual void PlaySound(std::string filename);
+-
+
+== Play song ==
+-
+virtual void PlaySong(std::string filename, bool looping);
+-
+
+== Stop all sounds ==
+-
+virtual void StopAllSounds();
+-
+
+== Is sound playing? ==
+-
+virtual bool IsSoundPlaying();
+-
+
+== Is song playing? ==
+-
+virtual bool IsSongPlaying();
+-
+
+== Private variables ==
+We need a few variables to store buffers and stream
+locations, which are implementation details that will
+differ from audio provider to audio provider.
+
+We limit the maximum amount of sounds we store in 
+memory by the constant MAX_SOUND_CHANNELS.
+We store sounds in a cache to play later, and we store
+the name of the currently playing streaming music as
+well.
+-
+static const int MAX_SOUND_CHANNELS = 5;
+
+SoundFileCache _soundFileCache;
+sf::Sound _currentSounds[MAX_SOUND_CHANNELS];
+std::string _currentSongName;
+-
+
+== The class ==
+-
+class SFMLSoundProvider : public IAudioProvider
+{
+public:
+  SFMLSoundProvider();
+
+  Play sound.
+  Play song.
+  Stop all sounds.
+
+  Is sound playing?.
+  Is song playing?.
+
+private:
+  Private variables.
+};
+-
+
+== Includes ==
+-
+#include <string>
+#include "SFML/Audio.hpp"
+#include "iaudioprovider.hpp"
+#include "soundfilecache.hpp"
+-
+
+== Include guard ==
+-
+#ifndef SFML_SOUND_PROVIDER_H
+#define SFML_SOUND_PROVIDER_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
+== @sfmlsoundprovider.hpp ==
+Include guard.

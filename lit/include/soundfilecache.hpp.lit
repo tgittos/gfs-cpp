@@ -1,0 +1,93 @@
+== The sound file cache header ==
+This header describes the sound file cache. When
+we play sounds, we cache them in memory so that
+we're not loading them every time we request a
+play.
+
+== Get sound ==
+-
+sf::Sound GetSound(std::string) const;
+-
+
+== Get song ==
+-
+sf::Music* GetSong(std::string) const;
+-
+
+== Deallocator template ==
+This template struct will deallocate memory reserved
+when files are buffered. It is templated so that we
+can use it on sf::Sound and sf::Music objects.
+-
+template <typename T>
+struct Deallocator
+{
+  void operator()(const std::pair<std::string, T> &p)
+  {
+    delete p.second;
+  }
+};
+-
+
+== Private variables ==
+Buffers to hold multiple sounds and music files.
+-
+static std::map<std::string, sf::SoundBuffer*> _sounds;
+static std::map<std::string, sf::Music*> _music;
+-
+
+== The exception class ==
+We also define a custom exception that we can throw
+when things go wrong.
+-
+class SoundNotFoundException : public std::runtime_error
+{
+public:
+  SoundNotFoundException(std::string const& msg):
+    std::runtime_error(msg)
+  {}
+};
+-
+
+== The class ==
+-
+class SoundFileCache
+{
+public:
+  SoundFileCache(void);
+  ~SoundFileCache(void);
+
+  Get sound.
+  Get song.
+
+private:
+  Private variables.
+
+  Deallocator template.
+};
+-
+
+== Includes ==
+-
+#include <string>
+#include <map>
+#include <stdexcept>
+#include "SFML/Audio.hpp"
+-
+
+== Include guard ==
+-
+#ifndef SOUND_FILE_CACHE_H
+#define SOUND_FILE_CACHE_H
+
+Includes.
+
+The class.
+
+The exception class.
+
+#endif
+-
+
+== @soundfilecache.hpp ==
+Include guard.

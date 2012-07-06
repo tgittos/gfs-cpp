@@ -117,6 +117,7 @@ MainMenu::MenuResult MainMenu::HandleClick(int x, int y)
     if (menuItemRect.Bottom > y && menuItemRect.Top < y &&
         menuItemRect.Left < x && menuItemRect.Right > x) 
     {
+      Stop the music if its playing.
       return (*it).action;
     }
   }
@@ -124,9 +125,18 @@ MainMenu::MenuResult MainMenu::HandleClick(int x, int y)
 }
 -
 
+== Stop the music if its playing ==
+-
+if(ServiceLocator::GetAudio()->IsSongPlaying())
+{
+  ServiceLocator::GetAudio()->StopAllSounds(); 
+}
+-
+
 == Includes ==
 -
 #include "mainmenu.hpp"
+#include "servicelocator.hpp"
 -
 
 == @mainmenu.cpp ==

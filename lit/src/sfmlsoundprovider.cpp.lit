@@ -1,0 +1,194 @@
+== The SFML sound provider ==
+This header describes a class that implements the
+IAudioProvider interface, leveraging the audio 
+capability in SFML.
+
+== Play sound ==
+The SFML sound provider will cache all sounds sent to it,
+and allow the game to only play a limited amount of them
+at the same time. 
+-
+void SFMLSoundProvider::PlaySound(std::string filename)
+{
+  int availChannel = -1;
+  Get next available audio channel.
+
+  Play sound in next channel if available.
+}
+-
+
+== Get next available audio channel ==
+The sounds are cached in the SoundFileCache object, and
+are swapped into the _currentSounds array as they are
+played.
+-
+for(int i = 0; i < MAX_SOUND_CHANNELS; i++)
+{
+  if(_currentSounds[i].GetStatus() != sf::Sound::Playing)
+  {
+    availChannel = i;
+  }
+}
+-
+
+== Play sound in next channel if available ==
+If there are no more sound channels available, we simply
+don't play the sound. Otherwise, get the sound from the
+cache and put it into the channel and play it.
+
+If we can't find the sound, ignore the error.
+-
+if (availChannel != -1)
+{
+  try
+  {
+    _currentSounds[availChannel] = _soundFileCache.GetSound(filename);
+    _currentSounds[availChannel].Play();
+  }
+  catch(SoundNotFoundException& err)
+  {
+    // swallow the error for now
+  }
+}
+-
+
+== Play song ==
+-
+void SFMLSoundProvider::PlaySong(std::string filename, bool looping)
+{
+  sf::Music *currentSong;
+  Get the requested song.
+  Stop the currently playing song, if any.
+  Play the requested song.
+}
+-
+
+== Get the requested song ==
+Get a pointer to the requested song from the audio
+cache.
+-
+try
+{
+  currentSong = _soundFileCache.GetSong(filename);
+}
+catch (SoundNotFoundException&)
+{
+  // swallow the error and do nothing
+  return;
+}
+-
+
+== Stop the currently playing song, if any ==
+If there is a song playing, which is determined based
+on the value of _currentSongName, stop it.
+If we can't find the song file, don't worry, cause it's
+probably not playing.
+-
+if("" != _currentSongName)
+{
+  try
+  {
+    sf::Music* priorSong = _soundFileCache.GetSong(_currentSongName);
+    if(sf::Sound::Stopped != priorSong->GetStatus())
+    {
+      priorSong->Stop();
+    }
+  }
+  catch(SoundNotFoundException&)
+  {
+    //swallow the error and do nothing
+  }
+}
+-
+
+== Play the requested song ==
+-
+_currentSongName = filename;
+currentSong->SetLoop(looping);
+currentSong->Play();
+-
+
+== Stop all sounds ==
+For every sound in the current sounds array, stop the
+sound.
+If a music item is playing, stop that too.
+
+Just a note, I'm not sure how this is going to work
+when 4/5 slots are empty. Are they null? Are they
+pointers to sf::Sound objects?
+-
+void SFMLSoundProvider::StopAllSounds()
+{
+  for(int i = 0; i < MAX_SOUND_CHANNELS; i++)
+  {
+    _currentSounds[i].Stop();
+  }
+
+  Stop the currently playing song, if any.
+}
+-
+
+== Is sound playing? ==
+Return true if any one of the sounds are playing.
+-
+bool SFMLSoundProvider::IsSoundPlaying()
+{
+  for(int i = 0; i < MAX_SOUND_CHANNELS; i++)
+  {
+    if(sf::Sound::Playing == _currentSounds[i].GetStatus())
+    {
+      return true;
+    }
+  }
+  return false;
+}
+-
+
+== Is song playing? ==
+-
+bool SFMLSoundProvider::IsSongPlaying()
+{
+  if("" != _currentSongName)
+  {
+    return sf::Music::Playing == _soundFileCache.GetSong(_currentSongName)->GetStatus();
+  }
+  return false;
+}
+-
+
+== Constructor ==
+Initialize the current song name to be empty.
+-
+SFMLSoundProvider::SFMLSoundProvider() :
+  _currentSongName("")
+{
+}
+-
+
+== Includes ==
+-
+#include "SFMLSoundProvider.hpp"
+#include "SoundFileCache.hpp"
+-
+
+== Wrapper ==
+Wrapper for nice formatting of the output code.
+This is to make up for a deficiency in Literati.
+-
+Includes.
+
+Constructor.
+
+Play sound.
+
+Play song.
+
+Stop all sounds.
+
+Is sound playing?.
+
+Is song playing?.
+-
+
+== @sfmlsoundprovider.cpp ==
+Wrapper.

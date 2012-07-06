@@ -1,0 +1,139 @@
+== The sound file cache class ==
+When we play sounds, we cache them in memory so that
+we're not loading them every time we request a play.
+The sound file cache manages these files in memory.
+
+== Get sound ==
+We create a new sound object every time we get a 
+sound from the cache.
+
+What happens to this memory during the life cycle?
+Does it get deleted? Does it stick around until the
+app closes? Is it a memory leak?
+-
+sf::Sound SoundFileCache::GetSound(std::string soundName) const
+{
+  std::map<std::string, sf::SoundBuffer*>::iterator itr = _sounds.find(soundName);
+  if(_sounds.end() == itr)
+  {
+    Load sound into cache.
+  }
+  else
+  {
+    sf::Sound sound;
+    sound.SetBuffer(*itr->second);
+    return sound;
+  }
+
+  Throw sound not found exception.
+}
+-
+
+== Load sound into cache ==
+If we have requested a sound that is not yet loaded
+into the cache, we need to load it in from disk.
+-
+sf::SoundBuffer *soundBuffer = new sf::SoundBuffer();
+if(!soundBuffer->LoadFromFile(soundName))
+{
+  delete soundBuffer;
+  Throw sound not found exception.
+}
+
+std::map<std::string, sf::SoundBuffer*>::iterator result = _sounds.insert(std::pair<std::string, sf::SoundBuffer*>(soundName, soundBuffer)).first;
+
+sf::Sound sound;
+sound.SetBuffer(*result->second);
+return sound;
+-
+
+== Get song ==
+-
+sf::Music* SoundFileCache::GetSong(std::string soundName) const
+{
+  std::map<std::string, sf::Music*>::iterator itr = _music.find(soundName);
+  if(_music.end() == itr)
+  {
+    Load song into cache.
+  }
+  else
+  {
+    return itr->second;
+  }
+
+  Throw song not found exception.
+}
+-
+
+== Load song into cache ==
+Similar to loading the sound, only with a song.
+-
+sf::Music *song = new sf::Music();
+if(!song->OpenFromFile(soundName))
+{
+  delete song;
+  Throw song not found exception.
+}
+else
+{
+  std::map<std::string, sf::Music*>::iterator result = _music.insert(std::pair<std::string, sf::Music*>(soundName, song)).first;
+  return result->second;
+}
+-
+
+== Throw sound not found exception ==
+-
+throw SoundNotFoundException(soundName + " was not found in call to SoundFileCache::GetSound");
+-
+
+== Throw song not found exception ==
+-
+throw SoundNotFoundException(soundName + " was not found in call to SoundFileCache::GetSong");
+-
+
+== Destructor ==
+Free all the memory we have assigned by loading in
+sound files, leveraging the templated struct.
+-
+SoundFileCache::~SoundFileCache(void)
+{
+  std::for_each(_sounds.begin(), _sounds.end(), Deallocator<sf::SoundBuffer*>());
+  std::for_each(_music.begin(), _music.end(), Deallocator<sf::Music*>());
+}
+-
+
+== Instantiate static variables ==
+-
+std::map<std::string, sf::SoundBuffer*> SoundFileCache::_sounds;
+std::map<std::string, sf::Music*> SoundFileCache::_music;
+-
+
+== Constructor ==
+-
+SoundFileCache::SoundFileCache(void) 
+{
+}
+-
+
+== Includes ==
+-
+#include "soundfilecache.hpp"
+-
+
+== Wrapper ==
+-
+Includes.
+
+Constructor.
+
+Destructor.
+
+Get sound.
+
+Get song.
+
+Instantiate static variables.
+-
+
+== @soundfilecache.cpp ==
+Wrapper.

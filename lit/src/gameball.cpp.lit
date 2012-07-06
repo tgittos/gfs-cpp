@@ -139,6 +139,8 @@ if(pos.x - width / 2 <= 0 ||
     _angle += 20.f;
   }
   moveX = -moveX;
+
+  ServiceLocator::GetAudio()->PlaySound("assets/wall-hit.wav");
 }
 -
 
@@ -171,6 +173,8 @@ if(player1BoundingBox.Intersects(GetBoundingRect()))
   Adjust ball angle by player velocity.
 
   _velocity += 5.f;
+
+  ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
 }
 -
 
@@ -231,10 +235,11 @@ GameBall::~GameBall()
 
 == Includes ==
 -
-#include "gameball.hpp"
 #include <math.h>
+#include "gameball.hpp"
 #include "game.hpp"
 #include "playerpaddle.hpp"
+#include "servicelocator.hpp"
 -
 
 == @gameball.cpp ==

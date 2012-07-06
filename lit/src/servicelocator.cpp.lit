@@ -1,0 +1,26 @@
+== The service locator ==
+This is just an empty bootstrap class to instantiate
+variables on the service locator.
+
+See the service locator header, ServiceLocator.hpp.lit
+for details.
+
+== Instantiate provider variables ==
+-
+IAudioProvider* ServiceLocator::_audioProvider = NULL;
+-
+
+== Includes ==
+-
+#include "servicelocator.hpp"
+-
+
+== Wrapper ==
+-
+Includes.
+
+Instantiate provider variables.
+-
+
+== @servicelocator.cpp ==
+Wrapper.

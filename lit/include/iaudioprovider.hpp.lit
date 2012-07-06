@@ -1,0 +1,81 @@
+== The audio provider interface ==
+This header file defines the IAudioProvider interface
+that will define the contract between the game and
+systems that provide sound. 
+
+It is a pure virtual abstract class, and will service
+as an Interface.
+
+== Playing audio ==
+In SFML (at least), there exists a distinction between
+a sound and music. This distinction also probably
+exists in other libraries, which is why it's been
+integrated into the interface.
+
+Basically, a sound is audio that is short and can be
+loaded into memory, and the sound plays from memory.
+
+Music is audio that is longer, and is based on streaming
+rather than buffering.
+
+== Play sound ==
+Play buffered audio from memory
+-
+virtual void PlaySound(std::string filename) = 0;
+-
+
+== Play song ==
+Play streaming audio
+-
+virtual void PlaySong(std::string filename, bool looping) = 0;
+-
+
+== Stop all sounds ==
+-
+virtual void StopAllSounds() = 0;
+-
+
+== Is sound playing? ==
+-
+virtual bool IsSoundPlaying() = 0;
+-
+
+== Is song playing? ==
+-
+virtual bool IsSongPlaying() = 0;
+-
+
+== The class ==
+-
+class IAudioProvider
+{
+public:
+  virtual ~IAudioProvider() { }
+  Play sound.
+  Play song.
+  Stop all sounds.
+
+  Is sound playing?.
+  Is song playing?.
+};
+-
+
+== Includes ==
+-
+#include <string>
+-
+
+== Include guard ==
+-
+#ifndef I_AUDIO_PROVIDER_H
+#define I_AUDIO_PROVIDER_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
+== @iaudioprovider.hpp ==
+Include guard.
