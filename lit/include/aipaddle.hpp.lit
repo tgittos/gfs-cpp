@@ -1,1 +1,66 @@
+== AI paddle header ==
+This class represents the AI paddle that the player
+will play againce. It is responsible for both running
+it's actions during the game, and for rendering itself
+to the screen. Ideally, these two functions should be
+abstracted into different classes. Perhaps that can
+be a refactor goal.
+
+== Update ==
+Run the game for the passed in time difference.
+-
+void Update(float elapsedTime);
+-
+
+== Get velocity ==
+Return the current velocity of the AI paddle
+-
+float GetVelocity() const;
+-
+
+== Private variables ==
+With regards to velocity, a negative velocity means
+the paddle is moving left, a positive velocity
+means the paddle is moving right.
+-
+float _velocity;
+float _maxVelocity;
+-
+
+== The class ==
+-
+class AIPaddle :
+  public VisibleGameObject 
+{
+public:
+  AIPaddle(void);
+  ~AIPaddle(void);
+
+  Update.
+
+  Get velocity.
+
+private:
+  Private variables.
+};
+-
+
+== Includes ==
+-
+#include "visiblegameobject.hpp"
+-
+
+== Include guard ==
+-
+#ifndef AI_PADDLE_H
+#define AI_PADDLE_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
 == @aipaddle.hpp ==
+Include guard.

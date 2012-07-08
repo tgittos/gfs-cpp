@@ -1,0 +1,169 @@
+== AI paddle ==
+This class represents the AI paddle that the player
+will play againce. It is responsible for both running
+it's actions during the game, and for rendering itself
+to the screen. Ideally, these two functions should be
+abstracted into different classes. Perhaps that can
+be a refactor goal.
+
+== Constructor ==
+Initialize the velocity and max velocity of the AI
+paddle. Load the graphic and reset the center to be
+the center of the png. 
+-
+AIPaddle::AIPaddle():
+  _velocity(0),
+  _maxVelocity(600.f)
+{
+  Load("assets/paddle.png");
+  assert(IsLoaded());
+
+  GetSprite().SetCenter(GetSprite().GetSize().x / 2, GetSprite().GetSize().y / 2);
+}
+-
+
+== Update ==
+The AI paddle follows the ball around and attempts to
+place itself where it needs to be to hit the ball.
+
+It looks like the author is trying to build in a flaw
+by making the paddle move faster in one direction than
+the other.
+
+I don't think this is the optimal way to do the AI,
+because it's not fair - the paddle has direct access
+to it's velocity, and the player does not. The player
+can only press a button to move the paddle.
+
+The AI should interface with it's paddle in the same
+way. There should be a paddle interface the AI can
+interact with (ideally the same interface the control
+system interacts with) so that the player doesn't feel
+like the AI cheats.
+
+Lets mark this for refactoring in future sessions. For
+now, I will not program the flaw the original author
+programmed in.
+-
+void AIPaddle::Update(float elapsedTime)
+{
+  Get the ball position.
+
+  Set velocity based on ball position.
+
+  Clamp velocity by max velocity.
+
+  Bounce off the walls.
+
+  GetSprite().Move(_velocity * elapsedTime, 0);
+}
+-
+
+== Get the ball position ==
+-
+const GameBall* gameBall = static_cast<GameBall*>(Game::GetGameObjectManager().Get("Ball"));
+sf::Vector2f ballPosition = gameBall->GetPosition();
+-
+
+== Set velocity based on ball position ==
+Stop the paddle if it's right under the ball.
+Note this AI doesn't take the y position of the
+ball into account.
+
+I'm not sure if that would significantly improve
+it's performance, but it's something to keep in
+mind.
+-
+if(GetPosition().x - 20 < ballPosition.x)
+{
+  _velocity += 15.f;
+}
+else if (GetPosition().x + 20 > ballPosition.x)
+{
+  _velocity -= 15.f;
+}
+else 
+{
+  _velocity = 0.f;
+}
+-
+
+== Clamp velocity by max velocity ==
+-
+if (_velocity > _maxVelocity)
+{
+  _velocity = _maxVelocity;
+}
+if (_velocity < -_maxVelocity)
+{
+  _velocity = -_maxVelocity;
+}
+-
+
+== Bounce off the walls ==
+This assigns position to a variable, which we could
+have used all over this method.
+
+Refactor.
+
+Also this shares some common code with the player
+paddle, such as bouncing off of walls.
+
+Perhaps the should be a base paddle class that
+has some of this common code in it.
+-
+sf::Vector2f pos = GetPosition();
+sf::Vector2f spriteSize = GetSprite().GetSize();
+if(pos.x <= spriteSize.x / 2)
+{
+  if(_velocity < 0)
+  {
+    _velocity = -_velocity;
+  }
+}
+if(pos.x >= (Game::SCREEN_WIDTH - spriteSize.x / 2))
+{
+  if(_velocity > 0)
+  {
+    _velocity = -_velocity;
+  }
+}
+-
+
+== Get velocity ==
+-
+float AIPaddle::GetVelocity() const
+{
+  return _velocity;
+}
+-
+
+== Destructor ==
+-
+AIPaddle::~AIPaddle()
+{
+}
+-
+
+== Includes ==
+-
+#include "aipaddle.hpp"
+#include "game.hpp"
+#include "gameball.hpp"
+-
+
+== Wrapper ==
+-
+Includes.
+
+Constructor.
+
+Destructor.
+
+Update.
+
+Get velocity.
+-
+
+== @aipaddle.cpp ==
+Wrapper.

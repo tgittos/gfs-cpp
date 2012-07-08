@@ -2,6 +2,7 @@
 #include "splashscreen.hpp"
 #include "mainmenu.hpp"
 #include "playerpaddle.hpp"
+#include "aipaddle.hpp"
 #include "gameball.hpp"
 #include "servicelocator.hpp"
 #include "sfmlsoundprovider.hpp"
@@ -17,8 +18,12 @@ void Game::Start(void)
   ServiceLocator::GetAudio()->PlaySong("assets/Soundtrack.ogg",true);
 
   PlayerPaddle *player1 = new PlayerPaddle();
-  player1->SetPosition((SCREEN_WIDTH / 2) - 45, 700);
+  player1->SetPosition(SCREEN_WIDTH / 2, 700);
   _gameObjectManager.Add("Paddle1", player1);
+
+  AIPaddle* player2 = new AIPaddle();
+  player2->SetPosition(SCREEN_WIDTH / 2, 40);
+  _gameObjectManager.Add("Paddle2", player2);
 
   GameBall *ball = new GameBall();
   ball->SetPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 15);

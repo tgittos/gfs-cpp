@@ -2,6 +2,7 @@
 #include "gameball.hpp"
 #include "game.hpp"
 #include "playerpaddle.hpp"
+#include "aipaddle.hpp"
 #include "servicelocator.hpp"
 GameBall::GameBall() :
   _velocity(230.f),
@@ -45,16 +46,6 @@ void GameBall::Update(float elapsedTime)
     {
       _angle += 20.f;
     }
-    // correct for moving off the field
-    if (pos.x - width / 2 < 0)
-    {
-      SetPosition(width / 2 + 1, pos.y);
-    }
-    if (pos.x + width / 2 > Game::SCREEN_WIDTH)
-    {
-      SetPosition(Game::SCREEN_WIDTH - width / 2 + 1, pos.y);
-    }
-    // move
     moveX = -moveX;
   
     ServiceLocator::GetAudio()->PlaySound("assets/wall-hit.wav");
@@ -91,13 +82,39 @@ void GameBall::Update(float elapsedTime)
     ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
   }
 
-  if(pos.y - height / 2 <= 0)
+  AIPaddle* player2 = dynamic_cast<AIPaddle*>(Game::GetGameObjectManager().Get("Paddle2"));
+  assert(NULL != player2);
+  
+  sf::Rect<float> player2BoundingBox = player2->GetBoundingRect();
+  
+  if(player2BoundingBox.Intersects(GetBoundingRect()))
   {
-    _angle = 180 - _angle;
+    _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
     moveY = -moveY;
+  
+    // if situation where the ball is inside the paddle
+    if(GetBoundingRect().Bottom > player2->GetBoundingRect().Bottom)
+    {
+      SetPosition(pos.x, player2->GetBoundingRect().Bottom - width / 2);
+    }
+  
+    float playerVelocity = player1->GetVelocity();
+    if (playerVelocity < 0)
+    {
+      _angle = fmodf(_angle - 20.f, 360.f);
+    }
+    if (playerVelocity > 0)
+    {
+      _angle = fmodf(_angle + 20.f, 360.f);
+    }
+  
+    _velocity += 5.f;
+  
+    ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
   }
 
-  if(pos.y + height / 2 >= Game::SCREEN_HEIGHT)
+  if(pos.y + height / 2 >= Game::SCREEN_HEIGHT ||
+     pos.y - height / 2 <= 0)
   {
     GetSprite().SetPosition(Game::SCREEN_WIDTH / 2, Game::SCREEN_HEIGHT / 2);
     _angle = (float)sf::Randomizer::Random(0, 360);

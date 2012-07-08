@@ -85,7 +85,7 @@ void GameBall::Update(float elapsedTime)
 
   Interact with player 1 paddle.
 
-  Bounce ball off top of screen.
+  Interact with player 2 paddle.
 
   Reset ball if player misses.
 
@@ -178,6 +178,35 @@ if(player1BoundingBox.Intersects(GetBoundingRect()))
 }
 -
 
+== Interact with player 2 paddle ==
+Same as with player 1.
+
+This can be refactored into a loop, I think.
+-
+AIPaddle* player2 = dynamic_cast<AIPaddle*>(Game::GetGameObjectManager().Get("Paddle2"));
+assert(NULL != player2);
+
+sf::Rect<float> player2BoundingBox = player2->GetBoundingRect();
+
+if(player2BoundingBox.Intersects(GetBoundingRect()))
+{
+  _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
+  moveY = -moveY;
+
+  // if situation where the ball is inside the paddle
+  if(GetBoundingRect().Bottom > player2->GetBoundingRect().Bottom)
+  {
+    SetPosition(pos.x, player2->GetBoundingRect().Bottom - width / 2);
+  }
+
+  Adjust ball angle by player velocity.
+
+  _velocity += 5.f;
+
+  ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
+}
+-
+
 == Adjust ball angle by player velocity ==
 If the player is moving when the ball is stuck, increase
 the angle by 20 degrees
@@ -193,25 +222,13 @@ if (playerVelocity > 0)
 }
 -
 
-== Bounce ball off top of screen ==
-Normally, if the ball went off the top of the screen, the
-player would win a point and we would reset the ball.
-However, we haven't done the enemy paddle, so for now, lets
-just reflect it back.
--
-if(pos.y - height / 2 <= 0)
-{
-  _angle = 180 - _angle;
-  moveY = -moveY;
-}
--
-
 == Reset ball if player misses ==
 If the player misses the ball, reset it.
 
 Refactor out the reference to the Game class.
 -
-if(pos.y + height / 2 >= Game::SCREEN_HEIGHT)
+if(pos.y + height / 2 >= Game::SCREEN_HEIGHT ||
+   pos.y - height / 2 <= 0)
 {
   GetSprite().SetPosition(Game::SCREEN_WIDTH / 2, Game::SCREEN_HEIGHT / 2);
   _angle = (float)sf::Randomizer::Random(0, 360);
@@ -239,6 +256,7 @@ GameBall::~GameBall()
 #include "gameball.hpp"
 #include "game.hpp"
 #include "playerpaddle.hpp"
+#include "aipaddle.hpp"
 #include "servicelocator.hpp"
 -
 
