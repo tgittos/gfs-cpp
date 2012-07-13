@@ -2,14 +2,8 @@
 #include "game.hpp"
 #include "gameball.hpp"
 
-AIPaddle::AIPaddle():
-  _velocity(0),
-  _maxVelocity(600.f)
+AIPaddle::AIPaddle()
 {
-  Load("assets/paddle.png");
-  assert(IsLoaded());
-
-  GetSprite().SetCenter(GetSprite().GetSize().x / 2, GetSprite().GetSize().y / 2);
 }
 
 AIPaddle::~AIPaddle()
@@ -61,9 +55,4 @@ void AIPaddle::Update(float elapsedTime)
   }
 
   GetSprite().Move(_velocity * elapsedTime, 0);
-}
-
-float AIPaddle::GetVelocity() const
-{
-  return _velocity;
 }

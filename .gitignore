@@ -2,4 +2,5 @@ out
 bin
 build
 .rbenv-version
+.rbenv-gemsets
 *.swp

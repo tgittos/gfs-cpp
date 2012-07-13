@@ -7,31 +7,9 @@ AI
 Initialize some varialbes during the construction,
 and load the asset
 -
-PlayerPaddle::PlayerPaddle() :
-  _velocity(0), _maxVelocity(600.0f)
+PlayerPaddle::PlayerPaddle()
 {
-  Load the asset.
-
-  Set sprite center.
 }
--
-
-== Load the asset ==
-Load the asset that represents the paddle, and
-die if we can't find it
--
-char path[] = "assets/paddle.png";
-Load(path);
-assert(IsLoaded());
--
-
-== Set sprite center ==
-Set the center of the sprite to the center of the
-bitmap data.
--
-sf::Sprite& sprite = GetSprite();
-sf::Vector2f size = sprite.GetSize();
-sprite.SetCenter(size.x / 2, size.y / 2);
 -
 
 == Update the sprite ==
@@ -66,22 +44,32 @@ The left key moves left, the right key moves right.
 If neither key is set, the paddle slows down.
 Movement sets the velocity.
 -
+float acceleration = 4.f;
 if(Game::GetInput().IsKeyDown(sf::Key::Left))
 {
-  _velocity -= 3.f;
+  if(_velocity > 0)
+  {
+    _velocity = 0.f;
+  }
+  _velocity -= acceleration;
 }
 if(Game::GetInput().IsKeyDown(sf::Key::Right))
 {
-  _velocity += 3.f;
+  if(_velocity < 0)
+  {
+    _velocity = 0.f;
+  }
+  _velocity += acceleration;
 }
 if(!Game::GetInput().IsKeyDown(sf::Key::Left) &&
    !Game::GetInput().IsKeyDown(sf::Key::Right))
 {
-  float deceleration = 2.;
+  float deceleration = 2.f;
   if (_velocity < -deceleration)
   {
     _velocity += deceleration;
-  } else if (_velocity > deceleration)
+  } 
+  else if (_velocity > deceleration)
   {
     _velocity -= deceleration;
   } else 
@@ -128,14 +116,6 @@ if(pos.x >= (Game::SCREEN_WIDTH - spriteSize.x / 2))
 GetSprite().Move(_velocity * elapsedTime, 0);
 -
 
-== Get the velocity ==
--
-float PlayerPaddle::GetVelocity() const
-{
-  return _velocity;
-}
--
-
 == Destructor ==
 -
 PlayerPaddle::~PlayerPaddle()
@@ -154,7 +134,5 @@ Includes.
 Constructor.
 
 Destructor.
-
-Get the velocity.
 
 Update the sprite.

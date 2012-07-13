@@ -2,22 +2,16 @@
 #define PLAYER_PADDLE_H
 
 #include "game.hpp" // this is a crappy reference
-#include "visiblegameobject.hpp"
+#include "paddle.hpp"
 
 class PlayerPaddle :
-  public VisibleGameObject
+  public Paddle
 {
 public:
   PlayerPaddle();
   ~PlayerPaddle();
 
   void Update(float elapsedTime);
-
-  float GetVelocity() const;
-
-private:
-  float _velocity;
-  float _maxVelocity;
 };
 
 #endif

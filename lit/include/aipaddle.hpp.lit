@@ -12,42 +12,22 @@ Run the game for the passed in time difference.
 void Update(float elapsedTime);
 -
 
-== Get velocity ==
-Return the current velocity of the AI paddle
--
-float GetVelocity() const;
--
-
-== Private variables ==
-With regards to velocity, a negative velocity means
-the paddle is moving left, a positive velocity
-means the paddle is moving right.
--
-float _velocity;
-float _maxVelocity;
--
-
 == The class ==
 -
 class AIPaddle :
-  public VisibleGameObject 
+  public Paddle 
 {
 public:
   AIPaddle(void);
   ~AIPaddle(void);
 
   Update.
-
-  Get velocity.
-
-private:
-  Private variables.
 };
 -
 
 == Includes ==
 -
-#include "visiblegameobject.hpp"
+#include "paddle.hpp"
 -
 
 == Include guard ==

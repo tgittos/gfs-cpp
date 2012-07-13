@@ -83,9 +83,7 @@ void GameBall::Update(float elapsedTime)
 
   Collide with the walls.
 
-  Interact with player 1 paddle.
-
-  Interact with player 2 paddle.
+  Interact with player paddle.
 
   Reset ball if player misses.
 
@@ -132,6 +130,17 @@ if(pos.x - width / 2 <= 0 ||
    pos.x + width / 2 >= Game::SCREEN_WIDTH)
 {
   _angle = 360.f - _angle;
+
+  // set the ball at the edge of the screen
+  if(pos.x - width / 2 <= 0)
+  {
+    SetPosition(width / 2, pos.y);
+  }
+  else if(pos.x + width / 2 >= Game::SCREEN_WIDTH)
+  {
+    SetPosition(Game::SCREEN_WIDTH - width / 2, pos.y);
+  }
+
   // correct for edge to edge bounching
   if(_angle > 260.f && _angle < 280.f ||
      _angle > 80.f && _angle < 100.f)
@@ -144,66 +153,62 @@ if(pos.x - width / 2 <= 0 ||
 }
 -
 
-== Interact with player 1 paddle ==
-Check to see if player 1 successfully hit the ball. 
-If so, calculate the return velocity and angle based
-on the velocity of the paddle. Allows players to
-affect the ball more than just being a mobile wall.
+== Interact with player paddle ==
+Check to see if player successfully hit the ball.
+If so, calculate the reutnr velocity and andlge based
+on the velocity of the paddle, and how the ball was
+struck.
+Allows players to affect the ball more than just being
+a mobile wall.
 
 Note, in this snippet of code, AGAIN we call into the
 game to get an object that should be dependency injected.
 Holy moly.
 -
-PlayerPaddle* player1 = dynamic_cast<PlayerPaddle*>(Game::GetGameObjectManager().Get("Paddle1"));
-assert(NULL != player1);
-
-sf::Rect<float> player1BoundingBox = player1->GetBoundingRect();
-
-if(player1BoundingBox.Intersects(GetBoundingRect()))
+sf::Rect<float> ballBoundingBox = GetBoundingRect();
+std::vector<std::string> players;
+players.push_back("Paddle1");
+players.push_back("Paddle2");
+for(unsigned int i = 0; i < players.size(); i++)
 {
-  _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
-  moveY = -moveY;
+  Paddle* player = dynamic_cast<Paddle*>(Game::GetGameObjectManager().Get(players[i]));
+  assert(NULL != player);
 
-  // if situation where the ball is inside the paddle
-  if(GetBoundingRect().Bottom > player1->GetBoundingRect().Top)
+  sf::Rect<float> playerBoundingBox = player->GetBoundingRect();
+
+  if(playerBoundingBox.Intersects(ballBoundingBox))
   {
-    SetPosition(pos.x, player1->GetBoundingRect().Top - width / 2);
+    moveY = -moveY;
+
+    Determine if the ball is at the top of bottom of screen.
+
+    Adjust ball angle by player velocity.
+
+    Adjust ball angle if player hit ball with side of paddle.
+
+    Fix ball position.
+
+    _velocity += 5.f;
+
+    ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
   }
-
-  Adjust ball angle by player velocity.
-
-  _velocity += 5.f;
-
-  ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
 }
 -
 
-== Interact with player 2 paddle ==
-Same as with player 1.
+== Determine if the ball is at the top of bottom of screen ==
+Because we have a loop, we need to ensure that we have the
+correct paddle selected for our ball's behavior.
 
-This can be refactored into a loop, I think.
+You don't want the ball interacting with the paddle at the
+bottom of the screen if it's at the top of the screen,
+and visa versa.
 -
-AIPaddle* player2 = dynamic_cast<AIPaddle*>(Game::GetGameObjectManager().Get("Paddle2"));
-assert(NULL != player2);
-
-sf::Rect<float> player2BoundingBox = player2->GetBoundingRect();
-
-if(player2BoundingBox.Intersects(GetBoundingRect()))
+bool atTop = true;
+bool atBottom = false;
+if (pos.y > Game::SCREEN_HEIGHT / 2)
 {
-  _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
-  moveY = -moveY;
-
-  // if situation where the ball is inside the paddle
-  if(GetBoundingRect().Bottom > player2->GetBoundingRect().Bottom)
-  {
-    SetPosition(pos.x, player2->GetBoundingRect().Bottom - width / 2);
-  }
-
-  Adjust ball angle by player velocity.
-
-  _velocity += 5.f;
-
-  ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
+  atTop = !atTop;
+  atBottom = !atBottom;
 }
 -
 
@@ -211,7 +216,7 @@ if(player2BoundingBox.Intersects(GetBoundingRect()))
 If the player is moving when the ball is stuck, increase
 the angle by 20 degrees
 -
-float playerVelocity = player1->GetVelocity();
+float playerVelocity = player->GetVelocity();
 if (playerVelocity < 0)
 {
   _angle = fmodf(_angle - 20.f, 360.f);
@@ -219,6 +224,80 @@ if (playerVelocity < 0)
 if (playerVelocity > 0)
 {
   _angle = fmodf(_angle + 20.f, 360.f);
+}
+-
+
+== Adjust ball angle if player hit ball with side of paddle ==
+If the player hits the ball with the side of their paddle, we
+need to reflect the ball differently, with a chance the ball
+will bounce behind the players paddle and make them lose
+-
+bool struckLeft = false;
+bool struckRight = false;
+
+if(pos.x <= playerBoundingBox.Left ||
+   pos.x >= playerBoundingBox.Right)
+{
+  std::cout << "player hit the ball a glancing blow" << std::endl;
+
+  _angle = -fmodf(_angle - 180.f, 360.f);
+
+  // value we want to compare - value to compare to < tolerance
+  int tolerance = 5;
+  if(pos.x + (width / 2) - playerBoundingBox.Left < tolerance)
+  {
+    std::cout << "player struck ball with the side of the paddle" << std::endl;
+    struckLeft = true;
+    if (atTop)
+    {
+      _angle = 315.f;
+    }
+    else
+    {
+      _angle = 225.f;
+    }
+    
+  }
+  if (pos.x - (width / 2) - playerBoundingBox.Right > -tolerance)
+  {
+    struckRight = true;
+    if (atTop)
+    {
+      _angle = 45.f;
+    }
+    else
+    {
+      _angle = 135.f;
+    }
+  }
+}
+else
+{
+  _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
+}
+-
+
+== Fix ball position ==
+If the ball is struck on the top, but it's overlapping the
+paddle, move it to the top of the paddle.
+However, if we hit the ball on one of the sides, then
+move it to the side of the paddle.
+-
+if (atBottom && !struckLeft && !struckRight && ballBoundingBox.Bottom > playerBoundingBox.Top)
+{
+  SetPosition(pos.x, playerBoundingBox.Top - width / 2);
+} 
+if (atTop && !struckLeft && !struckRight && ballBoundingBox.Top < playerBoundingBox.Bottom)
+{
+  SetPosition(pos.x, playerBoundingBox.Bottom + width / 2);
+}
+if(struckLeft && ballBoundingBox.Left > playerBoundingBox.Right)
+{
+  SetPosition(playerBoundingBox.Left - width / 2, pos.y);
+}
+if (struckRight && ballBoundingBox.Left < playerBoundingBox.Right)
+{
+  SetPosition(playerBoundingBox.Right + width / 2, pos.y);
 }
 -
 
@@ -253,6 +332,8 @@ GameBall::~GameBall()
 == Includes ==
 -
 #include <math.h>
+#include <iostream>
+#include <string>
 #include "gameball.hpp"
 #include "game.hpp"
 #include "playerpaddle.hpp"

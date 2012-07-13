@@ -1,0 +1,54 @@
+== The paddle header ==
+This represents a paddle, which is renderable.
+
+== Get velocity method ==
+-
+float GetVelocity() const;
+-
+
+== Variables ==
+We need to be able to store the paddles velocity and max
+velocity in order to be able to render it properly.
+A negative velocity represents movement left, and a
+positive velocity represents movement right.
+-
+float _velocity;
+float _maxVelocity;
+-
+
+== The class ==
+-
+class Paddle : 
+  public VisibleGameObject
+{
+public:
+  Paddle();
+  ~Paddle();
+
+  Get velocity method.
+
+protected:
+  Variables.
+};
+-
+
+== Includes ==
+-
+#include "game.hpp" // this is a crappy reference
+#include "visiblegameobject.hpp"
+-
+
+== Include guard ==
+-
+#ifndef PADDLE_H
+#define PADDLE_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
+== @paddle.hpp ==
+Include guard.

@@ -11,14 +11,8 @@ Initialize the velocity and max velocity of the AI
 paddle. Load the graphic and reset the center to be
 the center of the png. 
 -
-AIPaddle::AIPaddle():
-  _velocity(0),
-  _maxVelocity(600.f)
+AIPaddle::AIPaddle()
 {
-  Load("assets/paddle.png");
-  assert(IsLoaded());
-
-  GetSprite().SetCenter(GetSprite().GetSize().x / 2, GetSprite().GetSize().y / 2);
 }
 -
 
@@ -130,14 +124,6 @@ if(pos.x >= (Game::SCREEN_WIDTH - spriteSize.x / 2))
 }
 -
 
-== Get velocity ==
--
-float AIPaddle::GetVelocity() const
-{
-  return _velocity;
-}
--
-
 == Destructor ==
 -
 AIPaddle::~AIPaddle()
@@ -161,8 +147,6 @@ Constructor.
 Destructor.
 
 Update.
-
-Get velocity.
 -
 
 == @aipaddle.cpp ==

@@ -1,4 +1,6 @@
 #include <math.h>
+#include <iostream>
+#include <string>
 #include "gameball.hpp"
 #include "game.hpp"
 #include "playerpaddle.hpp"
@@ -40,6 +42,17 @@ void GameBall::Update(float elapsedTime)
      pos.x + width / 2 >= Game::SCREEN_WIDTH)
   {
     _angle = 360.f - _angle;
+  
+    // set the ball at the edge of the screen
+    if(pos.x - width / 2 <= 0)
+    {
+      SetPosition(width / 2, pos.y);
+    }
+    else if(pos.x + width / 2 >= Game::SCREEN_WIDTH)
+    {
+      SetPosition(Game::SCREEN_WIDTH - width / 2, pos.y);
+    }
+  
     // correct for edge to edge bounching
     if(_angle > 260.f && _angle < 280.f ||
        _angle > 80.f && _angle < 100.f)
@@ -51,66 +64,104 @@ void GameBall::Update(float elapsedTime)
     ServiceLocator::GetAudio()->PlaySound("assets/wall-hit.wav");
   }
 
-  PlayerPaddle* player1 = dynamic_cast<PlayerPaddle*>(Game::GetGameObjectManager().Get("Paddle1"));
-  assert(NULL != player1);
-  
-  sf::Rect<float> player1BoundingBox = player1->GetBoundingRect();
-  
-  if(player1BoundingBox.Intersects(GetBoundingRect()))
+  sf::Rect<float> ballBoundingBox = GetBoundingRect();
+  std::vector<std::string> players;
+  players.push_back("Paddle1");
+  players.push_back("Paddle2");
+  for(unsigned int i = 0; i < players.size(); i++)
   {
-    _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
-    moveY = -moveY;
+    Paddle* player = dynamic_cast<Paddle*>(Game::GetGameObjectManager().Get(players[i]));
+    assert(NULL != player);
   
-    // if situation where the ball is inside the paddle
-    if(GetBoundingRect().Bottom > player1->GetBoundingRect().Top)
+    sf::Rect<float> playerBoundingBox = player->GetBoundingRect();
+  
+    if(playerBoundingBox.Intersects(ballBoundingBox))
     {
-      SetPosition(pos.x, player1->GetBoundingRect().Top - width / 2);
+      moveY = -moveY;
+  
+      bool atTop = true;
+      bool atBottom = false;
+      if (pos.y > Game::SCREEN_HEIGHT / 2)
+      {
+        atTop = !atTop;
+        atBottom = !atBottom;
+      }
+  
+      float playerVelocity = player->GetVelocity();
+      if (playerVelocity < 0)
+      {
+        _angle = fmodf(_angle - 20.f, 360.f);
+      }
+      if (playerVelocity > 0)
+      {
+        _angle = fmodf(_angle + 20.f, 360.f);
+      }
+  
+      bool struckLeft = false;
+      bool struckRight = false;
+      
+      if(pos.x <= playerBoundingBox.Left ||
+         pos.x >= playerBoundingBox.Right)
+      {
+        std::cout << "player hit the ball a glancing blow" << std::endl;
+      
+        _angle = -fmodf(_angle - 180.f, 360.f);
+      
+        // value we want to compare - value to compare to < tolerance
+        int tolerance = 5;
+        if(pos.x + (width / 2) - playerBoundingBox.Left < tolerance)
+        {
+          std::cout << "player struck ball with the side of the paddle" << std::endl;
+          struckLeft = true;
+          if (atTop)
+          {
+            _angle = 315.f;
+          }
+          else
+          {
+            _angle = 225.f;
+          }
+      
+        }
+        if (pos.x - (width / 2) - playerBoundingBox.Right > -tolerance)
+        {
+          struckRight = true;
+          if (atTop)
+          {
+            _angle = 45.f;
+          }
+          else
+          {
+            _angle = 135.f;
+          }
+        }
+      }
+      else
+      {
+        _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
+      }
+  
+      if (atBottom && !struckLeft && !struckRight && ballBoundingBox.Bottom > playerBoundingBox.Top)
+      {
+        SetPosition(pos.x, playerBoundingBox.Top - width / 2);
+      }
+      if (atTop && !struckLeft && !struckRight && ballBoundingBox.Top < playerBoundingBox.Bottom)
+      {
+        SetPosition(pos.x, playerBoundingBox.Bottom + width / 2);
+      }
+      if(struckLeft && ballBoundingBox.Left > playerBoundingBox.Right)
+      {
+        SetPosition(playerBoundingBox.Left - width / 2, pos.y);
+      }
+      if (struckRight && ballBoundingBox.Left < playerBoundingBox.Right)
+      {
+        SetPosition(playerBoundingBox.Right + width / 2, pos.y);
+      }
+  
+      _velocity += 5.f;
+  
+      ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
     }
-  
-    float playerVelocity = player1->GetVelocity();
-    if (playerVelocity < 0)
-    {
-      _angle = fmodf(_angle - 20.f, 360.f);
-    }
-    if (playerVelocity > 0)
-    {
-      _angle = fmodf(_angle + 20.f, 360.f);
-    }
-  
-    _velocity += 5.f;
-  
-    ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
-  }
-
-  AIPaddle* player2 = dynamic_cast<AIPaddle*>(Game::GetGameObjectManager().Get("Paddle2"));
-  assert(NULL != player2);
-  
-  sf::Rect<float> player2BoundingBox = player2->GetBoundingRect();
-  
-  if(player2BoundingBox.Intersects(GetBoundingRect()))
-  {
-    _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
-    moveY = -moveY;
-  
-    // if situation where the ball is inside the paddle
-    if(GetBoundingRect().Bottom > player2->GetBoundingRect().Bottom)
-    {
-      SetPosition(pos.x, player2->GetBoundingRect().Bottom - width / 2);
-    }
-  
-    float playerVelocity = player1->GetVelocity();
-    if (playerVelocity < 0)
-    {
-      _angle = fmodf(_angle - 20.f, 360.f);
-    }
-    if (playerVelocity > 0)
-    {
-      _angle = fmodf(_angle + 20.f, 360.f);
-    }
-  
-    _velocity += 5.f;
-  
-    ServiceLocator::GetAudio()->PlaySound("assets/paddle-hit.wav");
   }
 
   if(pos.y + height / 2 >= Game::SCREEN_HEIGHT ||

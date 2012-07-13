@@ -1,0 +1,64 @@
+== The paddle class ==
+The player paddle represents a paddle.
+It is an abstract class, as it doesn't implement
+the update method of VisibleGameObject
+
+== Constructor ==
+Initialize some variables during the construction,
+and load the asset
+-
+Paddle::Paddle() :
+  _velocity(0), _maxVelocity(600.0f)
+{
+  Load the asset.
+
+  Set sprite center.
+}
+-
+
+== Load the asset ==
+Load the asset that represents the paddle, and
+die if we can't find it
+-
+char path[] = "assets/paddle.png";
+Load(path);
+assert(IsLoaded());
+-
+
+== Set sprite center ==
+Set the center of the sprite to the center of the
+bitmap data.
+-
+sf::Sprite& sprite = GetSprite();
+sf::Vector2f size = sprite.GetSize();
+sprite.SetCenter(size.x / 2, size.y / 2);
+-
+
+== Get the velocity ==
+-
+float Paddle::GetVelocity() const
+{
+  return _velocity;
+}
+-
+
+== Destructor ==
+-
+Paddle::~Paddle()
+{
+}
+-
+
+== Includes ==
+-
+#include "paddle.hpp"
+-
+
+== @paddle.cpp ==
+Includes.
+
+Constructor.
+
+Destructor.
+
+Get the velocity.

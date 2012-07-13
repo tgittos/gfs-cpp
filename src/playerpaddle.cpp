@@ -1,40 +1,38 @@
 #include "playerpaddle.hpp"
-PlayerPaddle::PlayerPaddle() :
-  _velocity(0), _maxVelocity(600.0f)
+PlayerPaddle::PlayerPaddle()
 {
-  char path[] = "assets/paddle.png";
-  Load(path);
-  assert(IsLoaded());
-
-  sf::Sprite& sprite = GetSprite();
-  sf::Vector2f size = sprite.GetSize();
-  sprite.SetCenter(size.x / 2, size.y / 2);
 }
 PlayerPaddle::~PlayerPaddle()
 {
 }
-float PlayerPaddle::GetVelocity() const
-{
-  return _velocity;
-}
 void PlayerPaddle::Update(float elapsedTime)
 {
+  float acceleration = 4.f;
   if(Game::GetInput().IsKeyDown(sf::Key::Left))
   {
-    _velocity -= 3.f;
+    if(_velocity > 0)
+    {
+      _velocity = 0.f;
+    }
+    _velocity -= acceleration;
   }
   if(Game::GetInput().IsKeyDown(sf::Key::Right))
   {
-    _velocity += 3.f;
+    if(_velocity < 0)
+    {
+      _velocity = 0.f;
+    }
+    _velocity += acceleration;
   }
   if(!Game::GetInput().IsKeyDown(sf::Key::Left) &&
      !Game::GetInput().IsKeyDown(sf::Key::Right))
   {
-    float deceleration = 2.;
+    float deceleration = 2.f;
     if (_velocity < -deceleration)
     {
       _velocity += deceleration;
-    } else if (_velocity > deceleration)
+    }
+    else if (_velocity > deceleration)
     {
       _velocity -= deceleration;
     } else

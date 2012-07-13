@@ -29,8 +29,8 @@ pang: includes gamelib.o main.o
 gamelib.o: playerlib.o game.o mainmenu.o splashscreen.o gameobjectmanager.o servicelocator.o soundlib.o
 	ld -r out/playerlib.o out/soundlib.o out/game.o out/servicelocator.o  out/mainmenu.o out/splashscreen.o out/gameobjectmanager.o -o out/gamelib.o
 
-playerlib.o: playerpaddle.o aipaddle.o gameball.o visiblegameobject.o
-	ld -r out/playerpaddle.o out/aipaddle.o out/gameball.o out/visiblegameobject.o -o out/playerlib.o
+playerlib.o: paddle.o playerpaddle.o aipaddle.o gameball.o visiblegameobject.o
+	ld -r out/paddle.o out/playerpaddle.o out/aipaddle.o out/gameball.o out/visiblegameobject.o -o out/playerlib.o
 
 soundlib.o: soundfilecache.o sfmlsoundprovider.o
 	ld -r out/soundfilecache.o out/sfmlsoundprovider.o -o out/soundlib.o

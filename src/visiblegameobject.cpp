@@ -27,6 +27,21 @@ void VisibleGameObject::Draw(sf::RenderWindow& window)
   if(_isLoaded)
   {
     window.Draw(_sprite);
+
+    //debug
+    /*
+    sf::Rect<float> boundingBox = GetBoundingRect();
+    sf::Shape debugBox = sf::Shape::Rectangle(
+      boundingBox.Left, boundingBox.Top,
+      boundingBox.Right, boundingBox.Bottom,
+      sf::Color::Blue,
+      true,
+      sf::Color::Blue
+    );
+    debugBox.SetOutlineWidth(2);
+    debugBox.EnableFill(false);
+    window.Draw(debugBox);
+    */
   }
 }
 
