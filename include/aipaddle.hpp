@@ -11,6 +11,10 @@ public:
   ~AIPaddle(void);
 
   void Update(float elapsedTime);
+
+private:
+  sf::Vector2<float> _lastBallPos;
+  float _paddleTargetX;
 };
 
 #endif

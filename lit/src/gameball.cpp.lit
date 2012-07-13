@@ -238,15 +238,12 @@ bool struckRight = false;
 if(pos.x <= playerBoundingBox.Left ||
    pos.x >= playerBoundingBox.Right)
 {
-  std::cout << "player hit the ball a glancing blow" << std::endl;
-
   _angle = -fmodf(_angle - 180.f, 360.f);
 
   // value we want to compare - value to compare to < tolerance
   int tolerance = 5;
   if(pos.x + (width / 2) - playerBoundingBox.Left < tolerance)
   {
-    std::cout << "player struck ball with the side of the paddle" << std::endl;
     struckLeft = true;
     if (atTop)
     {

@@ -12,6 +12,12 @@ Run the game for the passed in time difference.
 void Update(float elapsedTime);
 -
 
+== Private variables ==
+-
+sf::Vector2<float> _lastBallPos;
+float _paddleTargetX;
+-
+
 == The class ==
 -
 class AIPaddle :
@@ -22,6 +28,9 @@ public:
   ~AIPaddle(void);
 
   Update.
+
+private:
+  Private variables.
 };
 -
 
