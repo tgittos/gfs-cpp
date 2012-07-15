@@ -1,0 +1,46 @@
+== The GUI header ==
+In order to display scores, we need to display
+some kind of graphical user interface, or GUI.
+This will be rendered to screen just like any other
+visible game object, except that it's not actually
+a game object.
+
+== Draw ==
+Draw both the player's and the AI score onto the
+screen.
+-
+void Draw(sf::RenderWindow& window);
+-
+
+== The class ==
+-
+class GUI
+{
+public:
+  GUI();
+  ~GUI();
+
+  Draw.
+};
+-
+
+== Includes ==
+-
+#include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
+-
+
+== Include guard ==
+-
+#ifndef GUI_H
+#define GUI_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
+== @gui.hpp ==
+Include guard.

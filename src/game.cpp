@@ -99,6 +99,7 @@ void Game::GameLoop()
         _mainWindow.Clear(sf::Color(0,0,0));
         _gameObjectManager.UpdateAll();
         _gameObjectManager.DrawAll(_mainWindow);
+        _gui.Draw(_mainWindow);
         _mainWindow.Display();
 
         if(currentEvent.Type == sf::Event::Closed)
@@ -120,3 +121,4 @@ void Game::GameLoop()
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::_mainWindow;
 GameObjectManager Game::_gameObjectManager;
+GUI Game::_gui;

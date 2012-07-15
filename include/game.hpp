@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include <cassert>
 #include "gameobjectmanager.hpp"
+#include "gui.hpp"
 
 class Game
 {
@@ -31,6 +32,7 @@ private:
   static GameState _gameState;
   static sf::RenderWindow _mainWindow;
   static GameObjectManager _gameObjectManager;
+  static GUI _gui;
 
   static bool IsExiting();
   static void GameLoop();

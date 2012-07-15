@@ -1,0 +1,48 @@
+== The GUI ==
+In order to display scores, we need to display
+some kind of graphical user interface, or GUI.
+This will be rendered to screen just like any other
+visible game object, except that it's not actually
+a game object.
+
+== Draw ==
+The draw method, so that I can draw the UI based
+on game objects.
+-
+void GUI::Draw(sf::RenderWindow& window)
+{
+  // temp text testing stuff
+  sf::String test("This is a test");
+  window.Draw(test);
+}
+-
+
+== Constructor and destructor ==
+Empty constructors and destructors for great
+justice
+-
+GUI::GUI()
+{
+}
+
+GUI::~GUI()
+{
+}
+-
+
+== Includes ==
+-
+#include "gui.hpp"
+-
+
+== Wrapper ==
+-
+Includes.
+
+Constructor and destructor.
+
+Draw.
+-
+
+== @gui.cpp ==
+Wrapper.

@@ -42,6 +42,13 @@ create in the game.
 static GameObjectManager _gameObjectManager;
 -
 
+== GUI reference variable ==
+We need to store the GUI once we create it so that
+we can update it with every tick.
+-
+static GUI _gui;
+-
+
 == Start game method ==
 To that end, there is only a single public method, used
 to start the game. The game itself will handle all
@@ -139,6 +146,7 @@ private:
   Game state variable.
   Window reference variable.
   Game object manager variable.
+  GUI reference variable.
 
   Exit poller method.
   Game loop method.
@@ -157,6 +165,7 @@ and graphics SFML libraries.
 #include "SFML/Graphics.hpp"
 #include <cassert>
 #include "gameobjectmanager.hpp"
+#include "gui.hpp"
 -
 
 == Include guard ==
