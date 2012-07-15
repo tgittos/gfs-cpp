@@ -81,10 +81,6 @@ if (_lastBallPos != ballPosition && (ballPosition.y - _lastBallPos.y) < 0)
 
   Calculate paddle target based off of vector.
 }
-else
-{
-  Calculate paddle target based off of ball position.
-}
 _lastBallPos = ballPosition;
 -
 
@@ -92,10 +88,29 @@ _lastBallPos = ballPosition;
 Once we know how the ball is behaving, we can figure
 out where it's going to be.
 
-If it's way off screen, make the target to be where
-the paddle is, so it pauses.
+If it's way off screen, try to calculate the target
+after a single bounce.
 -
 _paddleTargetX = (GetPosition().y - c) / m;
+if (_paddleTargetX < 0 || _paddleTargetX > Game::SCREEN_WIDTH)
+{
+  Recalculate ball position after bounce.
+}
+-
+
+== Recalculate ball position after bounce ==
+If the ball is going to bounce, take the existing
+target and mirror it back into the field.
+If that's off screen as well, don't do anything.
+-
+if (_paddleTargetX < 0)
+{
+  _paddleTargetX = -_paddleTargetX;
+}
+else
+{
+  _paddleTargetX = Game::SCREEN_WIDTH - (_paddleTargetX - Game::SCREEN_WIDTH);
+}
 if (_paddleTargetX < 0 || _paddleTargetX > Game::SCREEN_WIDTH)
 {
   _paddleTargetX = GetPosition().x;

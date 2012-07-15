@@ -30,15 +30,18 @@ void AIPaddle::Update(float elapsedTime)
     _paddleTargetX = (GetPosition().y - c) / m;
     if (_paddleTargetX < 0 || _paddleTargetX > Game::SCREEN_WIDTH)
     {
-      _paddleTargetX = GetPosition().x;
-    }
-  }
-  else
-  {
-    float threshold = 150.f;
-    if (abs(_paddleTargetX - ballPosition.x) > threshold)
-    {
-      _paddleTargetX = ballPosition.x;
+      if (_paddleTargetX < 0)
+      {
+        _paddleTargetX = -_paddleTargetX;
+      }
+      else
+      {
+        _paddleTargetX = Game::SCREEN_WIDTH - (_paddleTargetX - Game::SCREEN_WIDTH);
+      }
+      if (_paddleTargetX < 0 || _paddleTargetX > Game::SCREEN_WIDTH)
+      {
+        _paddleTargetX = GetPosition().x;
+      }
     }
   }
   _lastBallPos = ballPosition;
