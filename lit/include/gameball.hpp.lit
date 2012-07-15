@@ -27,13 +27,26 @@ Same as x linear velocity, but on the y component.
 float LinearVelocityY(float angle);
 -
 
+== Get player 1 score ==
+-
+int GetPlayer1Score();
+-
+
+== Get AI score ==
+-
+int GetAIScore();
+-
+
 == Private variables ==
 Velocity, angle (bearing) and time elapsed since
-start (of game?)
+start (of game?).
+Player 1 score and AI score.
 -
 float _velocity;
 float _angle;
 float _elapsedTimeSinceStart;
+int _player1Score;
+int _aiScore;
 -
 
 == The class ==
@@ -44,6 +57,9 @@ class GameBall :
 public:
   GameBall();
   virtual ~GameBall();
+
+  Get player 1 score.
+  Get AI score.
 
   Update.
 

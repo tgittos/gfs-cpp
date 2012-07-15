@@ -8,7 +8,9 @@ Start the game with the ball flying at a random angle.
 -
 GameBall::GameBall() :
   _velocity(230.f),
-  _elapsedTimeSinceStart(0.f)
+  _elapsedTimeSinceStart(0.f),
+  _player1Score(0),
+  _aiScore(0)
 {
   Load("assets/ball.png");
   assert(IsLoaded());
@@ -55,6 +57,22 @@ float GameBall::LinearVelocityY(float angle)
 {
   angle = fmodf(angle -= 90.f, 360.f);
   return (float)sin(angle * (3.1415926 / 180.f ));
+}
+-
+
+== Get player 1 score ==
+-
+int GameBall::GetPlayer1Score()
+{
+  return _player1Score;
+}
+-
+
+== Get AI score ==
+-
+int GameBall::GetAIScore()
+{
+  return _aiScore;
 }
 -
 
@@ -300,16 +318,37 @@ if (struckRight && ballBoundingBox.Left < playerBoundingBox.Right)
 
 == Reset ball if player misses ==
 If the player misses the ball, reset it.
+Increment the score for the player oppose the
+paddle that it was closest to the ball.
 
 Refactor out the reference to the Game class.
 -
 if(pos.y + height / 2 >= Game::SCREEN_HEIGHT ||
    pos.y - height / 2 <= 0)
 {
+  Increment score.
+
   GetSprite().SetPosition(Game::SCREEN_WIDTH / 2, Game::SCREEN_HEIGHT / 2);
   _angle = (float)sf::Randomizer::Random(0, 360);
   _velocity = 220.f;
   _elapsedTimeSinceStart = 0.f;
+}
+-
+
+== Increment score ==
+If the ball passes by the AI character, increment
+the player 1 score. If the ball passes by the player
+1 paddle, increment the AI score.
+-
+if(pos.y + height / 2 <= 0)
+{
+  // Increment player 1 score
+  _player1Score++;
+}
+else
+{
+  // Increment AI score
+  _aiScore++;
 }
 -
 
@@ -345,3 +384,5 @@ Destructor.
 Update.
 Get x linear velocity.
 Get y linear velocity.
+Get player 1 score.
+Get AI score.

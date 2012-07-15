@@ -8,7 +8,9 @@
 #include "servicelocator.hpp"
 GameBall::GameBall() :
   _velocity(230.f),
-  _elapsedTimeSinceStart(0.f)
+  _elapsedTimeSinceStart(0.f),
+  _player1Score(0),
+  _aiScore(0)
 {
   Load("assets/ball.png");
   assert(IsLoaded());
@@ -164,6 +166,17 @@ void GameBall::Update(float elapsedTime)
   if(pos.y + height / 2 >= Game::SCREEN_HEIGHT ||
      pos.y - height / 2 <= 0)
   {
+    if(pos.y + height / 2 <= 0)
+    {
+      // Increment player 1 score
+      _player1Score++;
+    }
+    else
+    {
+      // Increment AI score
+      _aiScore++;
+    }
+  
     GetSprite().SetPosition(Game::SCREEN_WIDTH / 2, Game::SCREEN_HEIGHT / 2);
     _angle = (float)sf::Randomizer::Random(0, 360);
     _velocity = 220.f;
@@ -181,4 +194,12 @@ float GameBall::LinearVelocityY(float angle)
 {
   angle = fmodf(angle -= 90.f, 360.f);
   return (float)sin(angle * (3.1415926 / 180.f ));
+}
+int GameBall::GetPlayer1Score()
+{
+  return _player1Score;
+}
+int GameBall::GetAIScore()
+{
+  return _aiScore;
 }
