@@ -12,6 +12,14 @@ screen.
 void Draw(sf::RenderWindow& window);
 -
 
+== Private variables ==
+When we're using a custom font, we need to store
+a reference to the font file for when we render GUI
+elements
+-
+sf::Font* _font;
+-
+
 == The class ==
 -
 class GUI
@@ -21,6 +29,8 @@ public:
   ~GUI();
 
   Draw.
+private:
+  Private variables.
 };
 -
 

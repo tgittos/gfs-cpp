@@ -49,6 +49,13 @@ we can update it with every tick.
 static GUI _gui;
 -
 
+== Playing field variable ==
+A box that defines the play area, and hence where elements
+of the GUI are drawn.
+-
+static sf::Rect<int> _gameField;
+-
+
 == Start game method ==
 To that end, there is only a single public method, used
 to start the game. The game itself will handle all
@@ -89,6 +96,13 @@ coupling.
 Refactor away.
 -
 static GameObjectManager& GetGameObjectManager();
+-
+
+== Get game field ==
+Get the rectangle that describes where the game takes
+place on the screen.
+-
+const static sf::Rect<int> GetGameField();
 -
 
 == Public constants ==
@@ -139,6 +153,7 @@ public:
   Get window.
   Get input.
   Get object manager.
+  Get game field.
 
 private:
   State enumeration.
@@ -147,6 +162,7 @@ private:
   Window reference variable.
   Game object manager variable.
   GUI reference variable.
+  Playing field variable.
 
   Exit poller method.
   Game loop method.

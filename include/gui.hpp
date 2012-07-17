@@ -11,6 +11,8 @@ public:
   ~GUI();
 
   void Draw(sf::RenderWindow& window);
+private:
+  sf::Font* _font;
 };
 
 #endif

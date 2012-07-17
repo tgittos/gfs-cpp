@@ -18,11 +18,11 @@ void Game::Start(void)
   ServiceLocator::GetAudio()->PlaySong("assets/Soundtrack.ogg",true);
 
   PlayerPaddle *player1 = new PlayerPaddle();
-  player1->SetPosition(SCREEN_WIDTH / 2, 700);
+  player1->SetPosition(SCREEN_WIDTH / 2, _gameField.Bottom - 40);
   _gameObjectManager.Add("Paddle1", player1);
 
   AIPaddle* player2 = new AIPaddle();
-  player2->SetPosition(SCREEN_WIDTH / 2, 40);
+  player2->SetPosition(SCREEN_WIDTH / 2, _gameField.Top + 40);
   _gameObjectManager.Add("Paddle2", player2);
 
   GameBall *ball = new GameBall();
@@ -49,6 +49,10 @@ const sf::Input& Game::GetInput()
 GameObjectManager& Game::GetGameObjectManager()
 {
   return _gameObjectManager;
+}
+const sf::Rect<int> Game::GetGameField()
+{
+  return _gameField;
 }
 bool Game::IsExiting()
 {
@@ -122,3 +126,4 @@ Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::_mainWindow;
 GameObjectManager Game::_gameObjectManager;
 GUI Game::_gui;
+sf::Rect<int> Game::_gameField(0, 50, SCREEN_WIDTH, SCREEN_HEIGHT - 25);

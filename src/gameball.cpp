@@ -40,6 +40,14 @@ void GameBall::Update(float elapsedTime)
   float width = GetWidth();
   float height = GetHeight();
 
+  bool atTop = true;
+  bool atBottom = false;
+  if (pos.y > Game::SCREEN_HEIGHT / 2)
+  {
+    atTop = !atTop;
+    atBottom = !atBottom;
+  }
+
   if(pos.x - width / 2 <= 0 ||
      pos.x + width / 2 >= Game::SCREEN_WIDTH)
   {
@@ -80,14 +88,6 @@ void GameBall::Update(float elapsedTime)
     if(playerBoundingBox.Intersects(ballBoundingBox))
     {
       moveY = -moveY;
-  
-      bool atTop = true;
-      bool atBottom = false;
-      if (pos.y > Game::SCREEN_HEIGHT / 2)
-      {
-        atTop = !atTop;
-        atBottom = !atBottom;
-      }
   
       float playerVelocity = player->GetVelocity();
       if (playerVelocity < 0)
@@ -163,10 +163,11 @@ void GameBall::Update(float elapsedTime)
     }
   }
 
-  if(pos.y + height / 2 >= Game::SCREEN_HEIGHT ||
-     pos.y - height / 2 <= 0)
+  sf::Rect<int> gameField = Game::GetGameField();
+  if(pos.y + height / 2 >= gameField.Bottom ||
+     pos.y - height / 2 <= gameField.Top)
   {
-    if(pos.y + height / 2 <= 0)
+    if(atTop)
     {
       // Increment player 1 score
       _player1Score++;
@@ -178,7 +179,16 @@ void GameBall::Update(float elapsedTime)
     }
   
     GetSprite().SetPosition(Game::SCREEN_WIDTH / 2, Game::SCREEN_HEIGHT / 2);
-    _angle = (float)sf::Randomizer::Random(0, 360);
+    if (atTop)
+    {
+      // player 1 won, so serve to player 2
+      _angle = fmodf((float)sf::Randomizer::Random(0, 180) - 90.f, 360.f);
+    }
+    else
+    {
+      // serve to player 1
+      _angle = fmodf((float)sf::Randomizer::Random(0, 180) + 90.f, 360.f);
+    }
     _velocity = 220.f;
     _elapsedTimeSinceStart = 0.f;
   }

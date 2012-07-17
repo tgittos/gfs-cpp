@@ -18,6 +18,7 @@ public:
   static sf::RenderWindow& GetWindow();
   const static sf::Input& GetInput();
   static GameObjectManager& GetGameObjectManager();
+  const static sf::Rect<int> GetGameField();
 
 private:
   enum GameState {
@@ -33,6 +34,7 @@ private:
   static sf::RenderWindow _mainWindow;
   static GameObjectManager _gameObjectManager;
   static GUI _gui;
+  static sf::Rect<int> _gameField;
 
   static bool IsExiting();
   static void GameLoop();
