@@ -18,7 +18,8 @@ GameBall::GameBall() :
   GetSprite().SetCenter(15, 15);
 
   sf::Randomizer::SetSeed(std::clock());
-  _angle = (float)sf::Randomizer::Random(0, 360);
+  // serve to player first
+  _angle = (float)sf::Randomizer::Random(45, 135) + 90.f;
 }
 GameBall::~GameBall()
 {
@@ -52,6 +53,7 @@ void GameBall::Update(float elapsedTime)
      pos.x + width / 2 >= Game::SCREEN_WIDTH)
   {
     _angle = 360.f - _angle;
+    moveX = -moveX;
   
     // set the ball at the edge of the screen
     if(pos.x - width / 2 <= 0)
@@ -64,12 +66,13 @@ void GameBall::Update(float elapsedTime)
     }
   
     // correct for edge to edge bounching
+    /*
     if(_angle > 260.f && _angle < 280.f ||
        _angle > 80.f && _angle < 100.f)
     {
       _angle += 20.f;
     }
-    moveX = -moveX;
+    */
   
     ServiceLocator::GetAudio()->PlaySound("assets/wall-hit.wav");
   }
@@ -88,56 +91,80 @@ void GameBall::Update(float elapsedTime)
     if(playerBoundingBox.Intersects(ballBoundingBox))
     {
       moveY = -moveY;
+      _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
   
       float playerVelocity = player->GetVelocity();
+      bool playerMovingLeft = false;
+      bool playerMovingRight = false;
+      float angleAdjust = 20.f;
       if (playerVelocity < 0)
       {
-        _angle = fmodf(_angle - 20.f, 360.f);
+        playerMovingLeft = true;
       }
       if (playerVelocity > 0)
       {
-        _angle = fmodf(_angle + 20.f, 360.f);
+        playerMovingRight = true;
       }
+      
+      // if the ball was moving left
+      if (_angle > 180)
+      {
+        _velocity += 5.f;
+        if (playerMovingLeft && _angle - angleAdjust > 290)
+        {
+          _angle -= angleAdjust;
+        }
+        if (playerMovingRight && _angle + angleAdjust < 320)
+        {
+          _angle += angleAdjust;
+        }
+      }
+      // if the ball is moving right
+      if (_angle < 180)
+      {
+        _velocity += 5.f;
+        if (playerMovingLeft && _angle - angleAdjust > 40)
+        {
+          _angle -= angleAdjust;
+        }
+        if (playerMovingRight && _angle + angleAdjust < 120)
+        {
+          _angle += angleAdjust;
+        }
+      }
+      _angle = fmodf(_angle, 360.f);
   
       bool struckLeft = false;
       bool struckRight = false;
       
-      if(pos.x <= playerBoundingBox.Left ||
-         pos.x >= playerBoundingBox.Right)
+      // value we want to compare - value to compare to < tolerance
+      int tolerance = 5;
+      if(pos.x + (width / 2) - playerBoundingBox.Left < tolerance)
       {
-        _angle = -fmodf(_angle - 180.f, 360.f);
-      
-        // value we want to compare - value to compare to < tolerance
-        int tolerance = 5;
-        if(pos.x + (width / 2) - playerBoundingBox.Left < tolerance)
+        struckLeft = true;
+        if (atTop)
         {
-          struckLeft = true;
-          if (atTop)
-          {
-            _angle = 315.f;
-          }
-          else
-          {
-            _angle = 225.f;
-          }
-      
+          _angle = 315.f;
         }
-        if (pos.x - (width / 2) - playerBoundingBox.Right > -tolerance)
+        else
         {
-          struckRight = true;
-          if (atTop)
-          {
-            _angle = 45.f;
-          }
-          else
-          {
-            _angle = 135.f;
-          }
+          _angle = 225.f;
         }
+        _velocity += 20.f;
+      
       }
-      else
+      if (pos.x - (width / 2) - playerBoundingBox.Right > -tolerance)
       {
-        _angle = fmodf((360.f - (_angle - 180.f)), 360.f);
+        struckRight = true;
+        if (atTop)
+        {
+          _angle = 45.f;
+        }
+        else
+        {
+          _angle = 135.f;
+        }
+        _velocity += 20.f;
       }
   
       if (atBottom && !struckLeft && !struckRight && ballBoundingBox.Bottom > playerBoundingBox.Top)
@@ -182,15 +209,17 @@ void GameBall::Update(float elapsedTime)
     if (atTop)
     {
       // player 1 won, so serve to player 2
-      _angle = fmodf((float)sf::Randomizer::Random(0, 180) - 90.f, 360.f);
+      _angle = fmodf((float)sf::Randomizer::Random(45, 135) - 90.f, 360.f);
     }
     else
     {
       // serve to player 1
-      _angle = fmodf((float)sf::Randomizer::Random(0, 180) + 90.f, 360.f);
+      _angle = fmodf((float)sf::Randomizer::Random(45, 135) + 90.f, 360.f);
     }
     _velocity = 220.f;
     _elapsedTimeSinceStart = 0.f;
+  
+    ServiceLocator::GetAudio()->PlaySound("assets/miss.wav");
   }
 
   GetSprite().Move(moveX, moveY);

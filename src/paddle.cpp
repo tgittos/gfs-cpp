@@ -1,6 +1,6 @@
 #include "paddle.hpp"
 Paddle::Paddle() :
-  _velocity(0), _maxVelocity(600.0f)
+  _velocity(0), _maxVelocity(300.0f)
 {
   char path[] = "assets/paddle.png";
   Load(path);

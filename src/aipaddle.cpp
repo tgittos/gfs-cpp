@@ -7,6 +7,7 @@
 AIPaddle::AIPaddle()
 {
   _paddleTargetX = Game::SCREEN_WIDTH / 2;
+  sf::Randomizer::SetSeed(std::clock());
 }
 
 AIPaddle::~AIPaddle()
@@ -25,9 +26,9 @@ void AIPaddle::Update(float elapsedTime)
   if (_lastBallPos != ballPosition && (ballPosition.y - _lastBallPos.y) < 0)
   {
     float m = (ballPosition.y - _lastBallPos.y) / (ballPosition.x - _lastBallPos.x);
-    float c = ballPosition.y - m * ballPosition.x;
+    float c = (ballPosition.y + gameBall->GetHeight()) - m * ballPosition.x;
   
-    _paddleTargetX = (GetPosition().y - c) / m;
+    _paddleTargetX = ((GetPosition().y + GetWidth() / 2) - c) / m;
     if (_paddleTargetX < 0 || _paddleTargetX > Game::SCREEN_WIDTH)
     {
       if (_paddleTargetX < 0)
@@ -43,6 +44,10 @@ void AIPaddle::Update(float elapsedTime)
         _paddleTargetX = GetPosition().x;
       }
     }
+  }
+  else if ((ballPosition.y - _lastBallPos.y) > 0)
+  {
+    _paddleTargetX = GetPosition().x;
   }
   _lastBallPos = ballPosition;
 

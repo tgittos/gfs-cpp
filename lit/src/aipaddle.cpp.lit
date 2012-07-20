@@ -14,6 +14,7 @@ the center of the png.
 AIPaddle::AIPaddle()
 {
   _paddleTargetX = Game::SCREEN_WIDTH / 2;
+  sf::Randomizer::SetSeed(std::clock());
 }
 -
 
@@ -77,9 +78,13 @@ if (_lastBallPos.x == 0 && _lastBallPos.y == 0)
 if (_lastBallPos != ballPosition && (ballPosition.y - _lastBallPos.y) < 0)
 {
   float m = (ballPosition.y - _lastBallPos.y) / (ballPosition.x - _lastBallPos.x);
-  float c = ballPosition.y - m * ballPosition.x;
+  float c = (ballPosition.y + gameBall->GetHeight()) - m * ballPosition.x;
 
   Calculate paddle target based off of vector.
+}
+else if ((ballPosition.y - _lastBallPos.y) > 0)
+{
+  Idle paddle.
 }
 _lastBallPos = ballPosition;
 -
@@ -91,7 +96,7 @@ out where it's going to be.
 If it's way off screen, try to calculate the target
 after a single bounce.
 -
-_paddleTargetX = (GetPosition().y - c) / m;
+_paddleTargetX = ((GetPosition().y + GetWidth() / 2) - c) / m;
 if (_paddleTargetX < 0 || _paddleTargetX > Game::SCREEN_WIDTH)
 {
   Recalculate ball position after bounce.
@@ -113,18 +118,14 @@ else
 }
 if (_paddleTargetX < 0 || _paddleTargetX > Game::SCREEN_WIDTH)
 {
-  _paddleTargetX = GetPosition().x;
+  Idle paddle.
 }
 -
 
-== Calculate paddle target based off of ball position ==
-Paddle follows the ball
+== Idle paddle ==
+Paddle should oscillate slowly around it's current point
 -
-float threshold = 150.f;
-if (abs(_paddleTargetX - ballPosition.x) > threshold)
-{
-  _paddleTargetX = ballPosition.x; 
-}
+_paddleTargetX = GetPosition().x;
 -
 
 == Set velocity based on target ==
