@@ -1,7 +1,6 @@
 #include <sstream>
 #include "gui.hpp"
 #include "game.hpp"
-#include "gameball.hpp"
 
 GUI::GUI()
 {
@@ -22,13 +21,13 @@ GUI::~GUI()
 
 void GUI::Draw(sf::RenderWindow& window)
 {
-  GameBall* ball = dynamic_cast<GameBall*>(Game::GetGameObjectManager().Get("Ball"));
+  int* scores = Game::GetScore();
   
   std::ostringstream player1out;
-  player1out << "Player: " << ball->GetPlayer1Score();
+  player1out << "Player: " << scores[0];
   
   std::ostringstream aiout;
-  aiout << "Computer: " << ball->GetAIScore();
+  aiout << "Computer: " << scores[1];
   
   // dereference the pointer to get the actual object
   sf::String player1(player1out.str(), *_font);

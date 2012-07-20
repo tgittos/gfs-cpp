@@ -54,6 +54,26 @@ const sf::Rect<int> Game::GetGameField()
 {
   return _gameField;
 }
+int* Game::GetScore()
+{
+  return _scores;
+}
+void Game::Player1Scored()
+{
+  _scores[0]++;
+  if (WINNING_SCORE == _scores[0])
+  {
+    _gameState = Game::GameOver;
+  }
+}
+void Game::AIScored()
+{
+  _scores[1]++;
+  if (WINNING_SCORE == _scores[1])
+  {
+    _gameState = Game::GameOver;
+  }
+}
 bool Game::IsExiting()
 {
   if(_gameState == Game::Exiting)
@@ -77,9 +97,28 @@ void Game::ShowMenu()
      _gameState = Game::Exiting;
      break;
    case MainMenu::Play:
+    ResetGame();
      _gameState = Game::Playing;
      break;
   }
+}
+void Game::ShowGameOverScreen()
+{
+  GameEndScreen gameEndScreen;
+  if (_scores[0] > _scores[1])
+  {
+    gameEndScreen.ShowWin(_mainWindow);
+  }
+  else
+  {
+    gameEndScreen.ShowLose(_mainWindow);
+  }
+  _gameState = Game::ShowingMenu;
+}
+void Game::ResetGame()
+{
+  _scores[0] = 0;
+  _scores[1] = 0;
 }
 void Game::GameLoop()
 {
@@ -120,6 +159,11 @@ void Game::GameLoop()
 
         break;
       }
+    case Game::GameOver:
+      {
+        ShowGameOverScreen();
+        break;
+      }
   }
 }
 Game::GameState Game::_gameState = Uninitialized;
@@ -127,3 +171,4 @@ sf::RenderWindow Game::_mainWindow;
 GameObjectManager Game::_gameObjectManager;
 GUI Game::_gui;
 sf::Rect<int> Game::_gameField(0, 50, SCREEN_WIDTH, SCREEN_HEIGHT - 25);
+int Game::_scores[2] = {0, 0};

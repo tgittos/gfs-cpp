@@ -16,7 +16,8 @@ enum GameState {
   ShowingSplash, 
   Paused, 
   ShowingMenu, 
-  Playing, 
+  Playing,
+  GameOver,
   Exiting 
 };
 -
@@ -47,6 +48,15 @@ We need to store the GUI once we create it so that
 we can update it with every tick.
 -
 static GUI _gui;
+-
+
+== Game score array variable ==
+To store the players scores while the game is running, we
+can just stuff them into an array, with the first value
+being the player 1 score, and the second value being the
+AI score.
+-
+static int _scores[2];
 -
 
 == Playing field variable ==
@@ -105,6 +115,11 @@ place on the screen.
 const static sf::Rect<int> GetGameField();
 -
 
+== Get the game score ==
+-
+static int* GetScore();
+-
+
 == Public constants ==
 Screen width and height, public so that we can pull it
 for game logic. Maybe needs to be decoupled too.
@@ -116,6 +131,7 @@ able to resize the window.
 -
 const static int SCREEN_WIDTH = 1024;
 const static int SCREEN_HEIGHT = 768;
+const static int WINNING_SCORE = 12;
 -
 
 == Exit poller method ==
@@ -133,6 +149,28 @@ static void ShowSplashScreen();
 == Show menu method ==
 -
 static void ShowMenu();
+-
+
+== Show game over screen method ==
+-
+static void ShowGameOverScreen();
+-
+
+== Increment player 1 score ==
+-
+static void Player1Scored();
+-
+
+== Increment player 2 score ==
+-
+static void AIScored();
+-
+
+== Reset the game ==
+Resetting the game mostly just make sure that
+the player scores are initilized to 0.
+-
+static void ResetGame();
 -
 
 == Game loop method ==
@@ -155,6 +193,10 @@ public:
   Get object manager.
   Get game field.
 
+  Increment player 1 score.
+  Increment player 2 score.
+  Get the game score.
+
 private:
   State enumeration.
   
@@ -163,12 +205,14 @@ private:
   Game object manager variable.
   GUI reference variable.
   Playing field variable.
+  Game score array variable.
 
   Exit poller method.
   Game loop method.
   Show splash screen method.
   Show menu method.
-
+  Show game over screen method.
+  Reset the game.
 };
 -
 
@@ -182,6 +226,7 @@ and graphics SFML libraries.
 #include <cassert>
 #include "gameobjectmanager.hpp"
 #include "gui.hpp"
+#include "gameendscreen.hpp"
 -
 
 == Include guard ==

@@ -26,8 +26,8 @@ pang: includes gamelib.o main.o
 	mkdir -p bin
 	$(CC) out/gamelib.o out/main.o $(IFLAGS) $(LDFLAGS) $(CFLAGS) -o bin/$@
 
-gamelib.o: playerlib.o game.o mainmenu.o splashscreen.o gameobjectmanager.o servicelocator.o soundlib.o gui.o
-	ld -r out/playerlib.o out/soundlib.o out/gui.o out/game.o out/servicelocator.o out/mainmenu.o out/splashscreen.o out/gameobjectmanager.o -o out/gamelib.o
+gamelib.o: playerlib.o game.o mainmenu.o splashscreen.o gameendscreen.o gameobjectmanager.o servicelocator.o soundlib.o gui.o
+	ld -r out/playerlib.o out/soundlib.o out/gui.o out/game.o out/servicelocator.o out/mainmenu.o out/splashscreen.o out/gameendscreen.o out/gameobjectmanager.o -o out/gamelib.o
 
 playerlib.o: paddle.o playerpaddle.o aipaddle.o gameball.o visiblegameobject.o
 	ld -r out/paddle.o out/playerpaddle.o out/aipaddle.o out/gameball.o out/visiblegameobject.o -o out/playerlib.o

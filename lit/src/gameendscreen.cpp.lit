@@ -1,0 +1,147 @@
+== The game end screen header ==
+When a player wins or loses a game, we need to
+let them know. This will involve throwing a
+black, transparent overlay on top of the game,
+pausing the game, and showing a win/lose message
+
+We will also give the player the option to start
+a new game, or exit the game.
+
+== Screen appearance ==
+Both the win and the lose screens are going to need
+to look the same.
+
+The general appearance will be fading out the game
+in progress in the back, and showing some text on
+screen that will let the player know if they won or
+if they lost.
+
+== Draw backing ==
+First, before we can tell the player whether they
+won or lost, we need to fade out the screen.
+We can do this in a method that both the win and
+the lose screen call into.
+-
+void GameEndScreen::DrawBacking(sf::RenderWindow& window)
+{
+  sf::Color transparentBlack = sf::Color(
+    0, 0, 0, 255 * 0.75
+  );
+  window.Draw(sf::Shape::Rectangle(
+    0, 0, 
+    Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT,
+    transparentBlack
+  ));
+}
+-
+
+== Show win screen ==
+Draw the backing and then show in white text the
+message "You won"
+-
+void GameEndScreen::ShowWin(sf::RenderWindow& window)
+{
+  DrawBacking(window);
+  sf::String msg = sf::String("You won", *_font, 72.f);
+  msg.SetPosition(
+    Game::SCREEN_WIDTH / 2 - 150, 
+    Game::SCREEN_HEIGHT / 2 - 100
+  );
+  window.Draw(msg);
+  window.Display();
+
+  Poll the event pump for events.
+}
+-
+
+== Show lose screen ==
+Draw the backing and then show in white text the
+message "You lost"
+-
+void GameEndScreen::ShowLose(sf::RenderWindow& window)
+{
+  DrawBacking(window);
+  sf::String msg = sf::String("You lost", *_font, 72.f);
+  msg.SetPosition(
+    Game::SCREEN_WIDTH / 2 - 160, 
+    Game::SCREEN_HEIGHT / 2 - 100
+  );
+  window.Draw(msg);
+  window.Display();
+
+  Poll the event pump for events.
+}
+-
+
+== Poll the event pump for events ==
+Because each window is responsible for handling it's
+own events, we need a way to get those events. The
+simplest way given we already have a reference to the
+SFML window is the poll the pump in the screen.
+
+Right now, we don't do anything on events.
+
+Note, the events namespace has changed with newer
+versions of SFML. I am using SFML 1.6:
+http://www.sfml-dev.org/tutorials/1.6/window-events.php
+-
+sf::Event event;
+while(true)
+{
+  while(window.GetEvent(event))
+  {
+    if(event.Type == sf::Event::KeyPressed ||
+       event.Type == sf::Event::MouseButtonPressed ||
+       event.Type == sf::Event::Closed)
+    {
+      return;
+    }
+  }
+}
+-
+
+== Constructor ==
+Load in the font file and keep a reference to it.
+-
+GameEndScreen::GameEndScreen()
+{
+  _font = new sf::Font();
+  if (!_font->LoadFromFile("assets/visitor.ttf"))
+  {
+    // handle the error
+  } 
+}
+-
+
+== Destructor ==
+Clear the memory allocated to the font file.
+-
+GameEndScreen::~GameEndScreen()
+{
+  delete _font;
+}
+-
+
+== Includes ==
+-
+#include "gameendscreen.hpp"
+#include "game.hpp"
+-
+
+== Wrapper ==
+-
+Includes.
+
+Constructor.
+
+Destructor.
+
+Show win screen.
+
+Show lose screen.
+
+Draw backing.
+-
+
+== @gameendscreen.cpp ==
+Wrapper.

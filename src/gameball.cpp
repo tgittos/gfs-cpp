@@ -8,9 +8,7 @@
 #include "servicelocator.hpp"
 GameBall::GameBall() :
   _velocity(230.f),
-  _elapsedTimeSinceStart(0.f),
-  _player1Score(0),
-  _aiScore(0)
+  _elapsedTimeSinceStart(0.f)
 {
   Load("assets/ball.png");
   assert(IsLoaded());
@@ -26,7 +24,13 @@ GameBall::~GameBall()
 }
 void GameBall::Update(float elapsedTime)
 {
-  _elapsedTimeSinceStart += elapsedTime;
+  if (elapsedTime < 1.f)
+  {
+    // if we take more than 1 second to render a frame,
+    // we've probably just come from the menu
+    // and we should ignore it
+    _elapsedTimeSinceStart += elapsedTime;
+  }
 
   if(_elapsedTimeSinceStart < 3.f)
   {
@@ -66,13 +70,18 @@ void GameBall::Update(float elapsedTime)
     }
   
     // correct for edge to edge bounching
-    /*
     if(_angle > 260.f && _angle < 280.f ||
        _angle > 80.f && _angle < 100.f)
     {
-      _angle += 20.f;
+      if(_angle > 90 && _angle < 270)
+      {
+        _angle -= 20.f;
+      }
+      else
+      {
+        _angle += 20.f;
+      }
     }
-    */
   
     ServiceLocator::GetAudio()->PlaySound("assets/wall-hit.wav");
   }
@@ -167,6 +176,20 @@ void GameBall::Update(float elapsedTime)
         _velocity += 20.f;
       }
   
+      // correct for edge to edge bounching
+      if(_angle > 260.f && _angle < 280.f ||
+         _angle > 80.f && _angle < 100.f)
+      {
+        if(_angle > 90 && _angle < 270)
+        {
+          _angle -= 20.f;
+        }
+        else
+        {
+          _angle += 20.f;
+        }
+      }
+  
       if (atBottom && !struckLeft && !struckRight && ballBoundingBox.Bottom > playerBoundingBox.Top)
       {
         SetPosition(pos.x, playerBoundingBox.Top - width / 2);
@@ -197,12 +220,12 @@ void GameBall::Update(float elapsedTime)
     if(atTop)
     {
       // Increment player 1 score
-      _player1Score++;
+      Game::Player1Scored();
     }
     else
     {
       // Increment AI score
-      _aiScore++;
+      Game::AIScored();
     }
   
     GetSprite().SetPosition(Game::SCREEN_WIDTH / 2, Game::SCREEN_HEIGHT / 2);
@@ -233,12 +256,4 @@ float GameBall::LinearVelocityY(float angle)
 {
   angle = fmodf(angle -= 90.f, 360.f);
   return (float)sin(angle * (3.1415926 / 180.f ));
-}
-int GameBall::GetPlayer1Score()
-{
-  return _player1Score;
-}
-int GameBall::GetAIScore()
-{
-  return _aiScore;
 }

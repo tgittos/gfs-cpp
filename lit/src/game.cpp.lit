@@ -11,6 +11,7 @@ sf::RenderWindow Game::_mainWindow;
 GameObjectManager Game::_gameObjectManager;
 GUI Game::_gui;
 sf::Rect<int> Game::_gameField(0, 50, SCREEN_WIDTH, SCREEN_HEIGHT - 25);
+int Game::_scores[2] = {0, 0};
 -
 
 == Start the game ==
@@ -131,6 +132,43 @@ const sf::Rect<int> Game::GetGameField()
 }
 -
 
+== Get game score ==
+-
+int* Game::GetScore()
+{
+  return _scores;
+}
+-
+
+== Increment player 1 score ==
+This and the player 2 method are both called from within
+the game ball. The game ball knows who scored, so it will
+tell the game, and the game will monitor the scores
+and put the game in the game over state when someone
+scores 15 points.
+-
+void Game::Player1Scored()
+{
+  _scores[0]++;
+  if (WINNING_SCORE == _scores[0])
+  {
+    _gameState = Game::GameOver;
+  }
+}
+-
+
+== Increment player 2 score ==
+-
+void Game::AIScored()
+{
+  _scores[1]++;
+  if (WINNING_SCORE == _scores[1])
+  {
+    _gameState = Game::GameOver;
+  }
+}
+-
+
 == Method to check if exiting ==
 -
 bool Game::IsExiting()
@@ -172,9 +210,37 @@ void Game::ShowMenu()
      _gameState = Game::Exiting;
      break;
    case MainMenu::Play:
+    ResetGame();
      _gameState = Game::Playing;
      break;
   }
+}
+-
+
+== Method to show the game over screen ==
+-
+void Game::ShowGameOverScreen()
+{
+  GameEndScreen gameEndScreen;
+  if (_scores[0] > _scores[1])
+  {
+    gameEndScreen.ShowWin(_mainWindow);
+  }
+  else 
+  {
+    gameEndScreen.ShowLose(_mainWindow);
+  }
+  _gameState = Game::ShowingMenu;
+}
+-
+
+== Reset the game ==
+Set the scores to 0.
+-
+void Game::ResetGame()
+{
+  _scores[0] = 0;
+  _scores[1] = 0;
 }
 -
 
@@ -213,6 +279,11 @@ void Game::GameLoop()
       
         Handle game input events.
 
+        break;
+      }
+    case Game::GameOver:
+      {
+        ShowGameOverScreen();
         break;
       }
   }
@@ -265,8 +336,13 @@ Get window.
 Get input.
 Get object manager.
 Get playing field.
+Get game score.
+Increment player 1 score.
+Increment player 2 score.
 Method to check if exiting.
 Method to show the splash screen.
 Method to show the menu.
+Method to show the game over screen.
+Reset the game.
 The game loop.
 Initial state.

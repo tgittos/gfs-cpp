@@ -1,0 +1,96 @@
+== The game end screen header ==
+When a player wins or loses a game, we need to
+let them know. This will involve throwing a
+black, transparent overlay on top of the game,
+pausing the game, and showing a win/lose message
+
+If the player clicks the mouse, they will be
+returned to the menu.
+
+== Show screen ==
+When requested, we want to be able to show the
+screen.
+
+The game itself will handle the logic of keeping
+score and determining if a given player has won
+the game.
+
+If the player wins the game, display "You have won",
+and if the AI player wins the game, display
+"You have lost"
+
+== Show win screen ==
+-
+void ShowWin(sf::RenderWindow& window);
+-
+
+== Show lose screen ==
+-
+void ShowLose(sf::RenderWindow& window);
+-
+
+== Draw backing ==
+Because each screen is going to fade out the game
+in the same way, we can use a private method to
+draw the backing.
+-
+void DrawBacking(sf::RenderWindow& window);
+-
+
+== Constructor ==
+Load in the font when the screen is constructed.
+-
+GameEndScreen();
+-
+
+== Destructor ==
+Delete the memory assigned to the font when the
+object is destructed
+-
+~GameEndScreen();
+-
+
+== Private variables ==
+Hold a reference to the font.
+-
+sf::Font* _font;
+-
+
+== The class ==
+-
+class GameEndScreen
+{
+public:
+  Constructor.
+  Destructor.
+
+  Show win screen.
+  Show lose screen.
+
+private:
+  Private variables.
+
+  Draw backing.
+};
+-
+
+== Includes ==
+-
+#include "SFML/Window.hpp"
+#include "SFML/Graphics.hpp"
+-
+
+== Include guard ==
+-
+#ifndef GAME_END_SCREEN_H
+#define GAME_END_SCREEN_H
+
+Includes.
+
+The class.
+
+#endif
+-
+
+== @gameendscreen.hpp ==
+Include guard.
