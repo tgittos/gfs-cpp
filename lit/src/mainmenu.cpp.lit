@@ -6,27 +6,34 @@ itself and handle it's own input.
 -
 MainMenu::MenuResult MainMenu::Show(sf::RenderWindow& window)
 {
-  Load menu image into sprite.
-
   Setup play button clickable region.
 
   Setup exit button clickable region.
 
   Add menu items to menu item list.
 
-  window.Draw(sprite);
+  Init the screen.
+
+  Draw menu buttons.
+
+  Draw button labels.
+
   window.Display();
 
   return GetMenuResponse(window);
 }
 -
 
-== Load menu image into sprite ==
+== Load font ==
+Again, we need to load the font in to render text.
+We will be showing this menu frequently, so we should
+hold a reference to the font.
 -
-sf::Image image;
-char path[] = "assets/main-menu.png";
-image.LoadFromFile(path);
-sf::Sprite sprite(image);
+_font = new sf::Font();
+if (!_font->LoadFromFile("assets/visitor.ttf"))
+{
+  // handle the error
+}
 -
 
 == Setup play button clickable region ==
@@ -37,20 +44,20 @@ the user clicks on. Depending on where the user
 clicked, we will activate a different menu item.
 -
 MenuItem playButton;
-playButton.rect.Top= 145;
-playButton.rect.Bottom = 380;
-playButton.rect.Left = 0;
-playButton.rect.Right = 1023;
+playButton.rect.Top = 768 / 2 - 100;
+playButton.rect.Bottom = 768 / 2 ;
+playButton.rect.Left = 1024 / 3;
+playButton.rect.Right = 1024 / 3 * 2;
 playButton.action = Play;
 -
 
 == Setup exit button clickable region ==
 -
 MenuItem exitButton;
-exitButton.rect.Left = 0;
-exitButton.rect.Right = 1023;
-exitButton.rect.Top = 383;
-exitButton.rect.Bottom = 560;
+exitButton.rect.Top = 768 / 2;
+exitButton.rect.Bottom = 768 / 2 + 100;
+exitButton.rect.Left = 1024 / 3;
+exitButton.rect.Right = 1024 / 3 * 2;
 exitButton.action = Exit;
 -
 
@@ -58,6 +65,52 @@ exitButton.action = Exit;
 -
 _menuItems.push_back(playButton);
 _menuItems.push_back(exitButton);
+-
+
+== Init the screen ==
+Draw the screen black so that we can draw our text in
+white
+-
+window.Clear(sf::Color(0,0,0));
+-
+
+== Draw menu buttons ==
+The menu can be implemented with plain old SFML text
+and primitives, like rectangles drawn with no fill.
+This will prevent us hitting the disk just to fetch
+something we can just draw anyway.
+-
+sf::Shape playRect = sf::Shape::Rectangle(
+  playButton.rect.Left * 1.f, 
+  playButton.rect.Top * 1.f, 
+  playButton.rect.Right * 1.f, 
+  playButton.rect.Bottom * 1.f,
+  sf::Color::White, true, sf::Color::White
+);
+playRect.EnableFill(false);
+window.Draw(playRect);
+
+sf::Shape exitRect = sf::Shape::Rectangle(
+  exitButton.rect.Left * 1.f, 
+  exitButton.rect.Top * 1.f, 
+  exitButton.rect.Right * 1.f, 
+  exitButton.rect.Bottom * 1.f,
+  sf::Color::White, true, sf::Color::White
+);
+exitRect.EnableFill(false);
+window.Draw(exitRect);
+-
+
+== Draw button labels ==
+Draw the labels for each of the buttons above
+-
+sf::String playLabel = sf::String("Start game", *_font);
+playLabel.SetPosition(1024 / 2 - 90, playButton.rect.Top + 30);
+window.Draw(playLabel);
+
+sf::String exitLabel = sf::String("Exit game", *_font);
+exitLabel.SetPosition(1024 / 2 - 75, exitButton.rect.Top + 30);
+window.Draw(exitLabel);
 -
 
 == Handle input ==
@@ -133,6 +186,22 @@ if(ServiceLocator::GetAudio()->IsSongPlaying())
 }
 -
 
+== Construct ==
+-
+MainMenu::MainMenu()
+{
+  Load font.
+}
+-
+
+== Destruct ==
+-
+MainMenu::~MainMenu()
+{
+  delete _font;
+}
+-
+
 == Includes ==
 -
 #include "mainmenu.hpp"
@@ -141,6 +210,10 @@ if(ServiceLocator::GetAudio()->IsSongPlaying())
 
 == @mainmenu.cpp ==
 Includes.
+
+Construct.
+
+Destruct.
 
 Draw.
 

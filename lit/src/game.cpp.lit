@@ -59,7 +59,6 @@ Start playing the soundtrack, and loop it.
 -
 SFMLSoundProvider soundProvider;
 ServiceLocator::RegisterAudioService(&soundProvider);
-ServiceLocator::GetAudio()->PlaySong("assets/Soundtrack.ogg",true);
 -
 
 == Set up player 1 ==

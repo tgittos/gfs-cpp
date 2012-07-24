@@ -15,7 +15,6 @@ void Game::Start(void)
 
   SFMLSoundProvider soundProvider;
   ServiceLocator::RegisterAudioService(&soundProvider);
-  ServiceLocator::GetAudio()->PlaySong("assets/Soundtrack.ogg",true);
 
   PlayerPaddle *player1 = new PlayerPaddle();
   player1->SetPosition(SCREEN_WIDTH / 2, _gameField.Bottom - 40);

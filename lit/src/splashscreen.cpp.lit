@@ -11,46 +11,59 @@ is shown for events.
 -
 void SplashScreen::Show(sf::RenderWindow& window)
 {
-  Load the image.
+  Init the screen.
 
-  Create a sprite from the image.
+  Load the font.
 
-  Draw the sprite.
+  Draw the title.
+
+  Draw the instructions.
+
+  window.Display();
 
   Poll the event pump for events.
 }
 -
 
-== Load the image ==
-Load the image from the disk, if we can't load it,
-exit the show method and render a black screen?
+== Init the screen ==
+Draw the screen black so that we can draw our text in
+white
 -
-char path[] = "assets/splash-screen.png";
-sf::Image image;
-if(!image.LoadFromFile(path))
+window.Clear(sf::Color(0,0,0));
+-
+
+== Load the font ==
+We're only going to show the splash screen once, so it's
+ok to just load the file and delete the reference after.
+-
+char path[] = "assets/visitor.ttf";
+sf::Font font;
+if (!font.LoadFromFile(path))
 {
   return;
 }
 -
 
-== Create a sprite from the image ==
-In SFML, the concept of an image is different from the
-concept of a sprite. A sprite is the object that gets
-drawn to the screen. An image is the pixel data of an
-image.
-
-Two reasons this abstraction exists are:
-* two game objects can share a single image (in this
-case, the paddles)
-* one image can hold multiple game objects (sprite sheet)
+== Draw the title ==
 -
-sf::Sprite sprite(image);
+sf::String title = sf::String("Pang!", font, 72.f);
+title.SetPosition(
+  Game::SCREEN_WIDTH / 2 - 100, 
+  Game::SCREEN_HEIGHT / 2 - 72
+);
+window.Draw(title);
 -
 
-== Draw the sprite ==
+== Draw the instructions ==
+The player has to press a key or click a mouse button
+to exit the splash screen.
 -
-window.Draw(sprite);
-window.Display();
+sf::String inst = sf::String("Click or press any key to continue", font, 24.f);
+inst.SetPosition(
+  Game::SCREEN_WIDTH / 2 - 240,
+  Game::SCREEN_HEIGHT / 2 + 15 
+);
+window.Draw(inst);
 -
 
 == Poll the event pump for events ==
@@ -83,6 +96,7 @@ while(true)
 == Includes ==
 -
 #include "SplashScreen.hpp"
+#include "game.hpp"
 -
 
 == @splashscreen.cpp ==

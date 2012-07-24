@@ -51,8 +51,9 @@ public:
 -
 
 == Menu render function ==
-I don't know why the render method returns the
-result of clicking on the menu?
+The render polls the SFML event pump for an event,
+and then passes the result back to the game so that
+it can either quit or start.
 -
 MenuResult Show(sf::RenderWindow& window);
 -
@@ -75,11 +76,19 @@ MenuResult HandleClick(int x, int y);
 std::list<MenuItem> _menuItems;
 -
 
+== The font ==
+-
+sf::Font* _font;
+-
+
 == The class ==
 -
 class MainMenu
 {
 public:
+  MainMenu();
+  ~MainMenu();
+  
   The menu return states.
 
   A menu item.
@@ -89,6 +98,7 @@ public:
 private:
   Get menu input.
   The menu items.
+  The font.
 };
 -
 

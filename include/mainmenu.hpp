@@ -8,6 +8,9 @@
 class MainMenu
 {
 public:
+  MainMenu();
+  ~MainMenu();
+
   enum MenuResult {
     Nothing,
     Exit,
@@ -27,6 +30,7 @@ private:
   MenuResult GetMenuResponse(sf::RenderWindow& window);
   MenuResult HandleClick(int x, int y);
   std::list<MenuItem> _menuItems;
+  sf::Font* _font;
 };
 
 #endif
